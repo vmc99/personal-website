@@ -1,0 +1,38 @@
+<section class="section experience">
+  <div class="section__title">Where I've Worked</div>
+  <div class="section__content">
+    <div class="jobs">
+      {% for job in site.data.experience %}
+      <div class="job">
+        <div class="job__header">
+          <div class="job__left">
+            <div class="job__company">
+              <a href="{{job.url}}" target="_blank">{{job.company}}</a>
+            </div>
+            <div class="job__position">{{job.position}}</div>
+          </div>
+          <div class="job__right">
+            <div class="job__time">{{job.time}}</div>
+            {% if job.location %}
+            <div class="job__location">{{job.location}}</div>
+            {% endif %}
+          </div>
+        </div>
+        {% if job.description %}
+        <div class="job__toggle" onclick="toggleJobDescription(this)">
+          <span class="toggle-text">More Details</span>
+          <span class="toggle-icon">▼</span>
+        </div>
+        <ul class="job__description collapsed">
+          {% for item in job.description %}
+          <li>{{item}}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- <a href="{{site.resume}}" target="_blank" class="arrow-link">View My Resume</a> -->
+  </div>
+</section>

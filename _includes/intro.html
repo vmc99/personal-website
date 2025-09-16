@@ -1,0 +1,37 @@
+<header class="intro" id="top">
+  <div class="intro__inner">
+    <div class="intro__content">
+      <h1 class="intro__hello">Hello!
+        <span class="emoji wave-hand animated"></span>
+      </h1>
+
+      <h2 class="intro__tagline">I'm
+        <span class="name">Vamsi</span>, a software engineer focused on designing, building &amp; automating things.
+        <span class="emoji technologist"></span>
+      </h2>
+
+      <h3 class="intro__contact">
+        <span>Say Hello Back!</span>
+        <span class="emoji pointer"></span>
+        <span>
+          <a href="mailto:vmuk99@gmail.com" target="_blank" class="highlight-link">vmuk99@gmail.com</a>
+        </span>
+      </h3>
+    </div>
+
+    <div class="intro__visual" id="intro-visual" aria-hidden="true">
+      <!-- Prefer modern format with PNG fallback -->
+      <picture>
+        {% if site.baseurl and site.baseurl != '' %}
+          <source srcset="{{ site.baseurl }}/img/vr-statue.webp" type="image/webp" />
+          <img src="{{ site.baseurl }}/img/vr-statue.png" alt="Vibrant neon VR statue" loading="lazy" decoding="async" />
+        {% else %}
+          <!-- When opening the file without Jekyll, use relative paths -->
+          <source srcset="img/vr-statue.webp" type="image/webp" />
+          <img src="img/vr-statue.png" alt="Vibrant neon VR statue" loading="lazy" decoding="async" />
+        {% endif %}
+      </picture>
+      <div class="intro__scribble">Do your<br/>thing!</div>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,110 @@
+.education {
+  .jobs {
+    margin-bottom: 100px;
+  }
+  .job {
+    margin-bottom: 40px;
+    
+    &__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 15px;
+      @include mobile {
+        flex-direction: column;
+        gap: 8px;
+        align-items: stretch;
+      }
+    }
+    
+    &__left {
+      flex: 1;
+    }
+    
+    &__right {
+      text-align: right;
+      flex-shrink: 0;
+      min-width: 180px;
+      @include mobile {
+        text-align: left;
+        min-width: auto;
+      }
+    }
+    
+    &__company {
+      font-weight: 700;
+      font-size: 1.1rem;
+      line-height: 1.2;
+      margin-bottom: 2px;
+      
+      a {
+        color: inherit;
+        text-decoration: none;
+        
+        &:hover {
+          color: $yellow;
+        }
+      }
+    }
+    
+    &__position {
+      font-style: italic;
+      font-size: 1rem;
+      line-height: 1.2;
+      font-weight: 500;
+    }
+    
+    &__time {
+      font-size: 0.9rem;
+      font-family: 'Inconsolata', monospace;
+      line-height: 1.2;
+      margin-bottom: 2px;
+      @include mobile {
+        font-size: 0.8rem;
+      }
+    }
+    
+    &__location {
+      font-size: 0.85rem;
+      line-height: 1.2;
+      @include mobile {
+        font-size: 0.75rem;
+      }
+    }
+    
+    &__description {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      
+      li {
+        position: relative;
+        padding-left: 20px;
+        margin-bottom: 10px;
+        line-height: 1.5;
+        font-size: 0.9rem;
+        
+        &:before {
+          content: '▶';
+          position: absolute;
+          left: 0;
+          color: $blue;
+          font-size: 0.7rem;
+          top: 4px;
+        }
+      }
+    }
+  }
+  .arrow-link {
+    font-size: 1.25rem;
+    &:after {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+// Light mode hover color for company names
+body:not(.night) .education .job__company a:hover {
+  color: $blue;
+}

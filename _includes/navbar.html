@@ -1,0 +1,18 @@
+<nav class="navbar" id="navbar">
+  <div class="navbar__content">
+    <div class="navbar__logo">
+      <a href="#top" onclick="scrollToTop()">
+        {% if site.baseurl and site.baseurl != '' %}
+          <img src="{{ site.baseurl }}/img/logo/logo.svg" alt="Logo" />
+        {% else %}
+          <img src="img/logo/logo.svg" alt="Logo" />
+        {% endif %}
+      </a>
+    </div>
+    
+    <div class="navbar__right">
+      {% include social-top.html %}
+      {% include switch.html %}
+    </div>
+  </div>
+</nav>

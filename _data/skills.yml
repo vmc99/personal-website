@@ -1,0 +1,77 @@
+languages:
+  - item: Python
+    icon: python
+  - item: C/C++
+    icon: cplusplus
+  - item: Java 
+    icon: java
+  - item: SQL
+    icon: postgresql
+  - item: Go
+    icon: go
+  - item: Swift
+    icon: swift
+
+
+frameworks:
+  - item: LangChain
+    icon: langchain
+  - item: LangGraph
+    icon: langgraph
+  - item: FastAPI
+    icon: fastapi
+  - item: Django
+    icon: django
+  - item: PyTorch
+    icon: pytorch
+  - item: Scikit-learn
+    icon: scikitlearn
+  - item: Selenium
+    icon: selenium
+  - item: OpenCV
+    icon: opencv
+  - item: SpringBoot
+    icon: spring
+  - item: SwiftUI
+    icon: swiftui
+  - item: Streamlit
+    icon: streamlit
+  - item: Ollama
+    icon: ollama
+  - item: vLLM
+    icon: vllm
+
+
+
+tools:
+  - item: Git & Github
+    icon: git
+  - item: AWS
+    icon: amazonwebservices
+  - item: JIRA
+    icon: jira
+  - item: Postman
+    icon: postman
+  - item: Confluence
+    icon: confluence
+  - item: Docker
+    icon: docker
+  - item: Google Colab
+    icon: googlecolab
+  - item: Dbeaver
+    icon: dbeaver
+  - item: SQLDeveloper
+    icon: sqldeveloper
+
+databases:
+  - item: PostgreSQL
+    icon: postgresql
+  - item: Oracle
+    icon: oracle
+  - item: MongoDB
+    icon: mongodb
+  - item: DynamoDB
+    icon: amazondynamodb
+  - item: Redis
+    icon: redis
+

@@ -1,0 +1,110 @@
+.social-top {
+  position: absolute;
+  top: 33px; /* nudge down to align with toggle */
+  right: 160px; /* increase clearance from toggle */
+  left: auto;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  z-index: 3;
+  max-width: calc(100% - 200px); /* never overlap toggle zone */
+  transition: opacity 0.3s ease;
+
+  @include mobile {
+    top: 14px;
+    right: 120px;
+    gap: 10px;
+    max-width: calc(100% - 150px);
+  }
+
+  // When inside navbar, use static positioning
+  .navbar & {
+    position: static;
+    top: auto;
+    right: auto;
+    left: auto;
+    max-width: none;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    margin: 0; // Remove any margins when in navbar
+  }
+
+  // Hide original position when navbar is visible
+  body.navbar-visible & {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  // But show when inside navbar
+  body.navbar-visible .navbar & {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  a {
+    @include transition;
+    display: inline-flex;
+    align-items: center;
+    color: $blue;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    &:hover,
+    &:focus {
+      color: $off-white;
+    }
+  }
+
+  /* Dark theme adjustments */
+  body.night & {
+    a {
+      color: $off-white;
+      &:hover,
+      &:focus {
+        color: $yellow;
+      }
+    }
+  }
+
+  img {
+    width: 22px;
+    height: 22px;
+    display: none; /* hide icons when there is text */
+    transition: opacity 0.3s ease;
+    
+    @include little-desktop {
+      display: inline-block; /* show icons on smaller screens */
+    }
+    
+    &:hover {
+      opacity: 0.7;
+    }
+    
+    /* Make email icon slightly larger */
+    &[src*="email.svg"] {
+      width: 26px;
+      height: 26px;
+    }
+  }
+
+  /* Dark theme adjustments */
+  body.night & {
+    img {
+      opacity: 0.8;
+      
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+
+  .text {
+    margin-left: 6px;
+    display: inline;
+    @include little-desktop {
+      display: none; /* icons only on smaller screens */
+    }
+  }
+}

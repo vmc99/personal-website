@@ -1,0 +1,45 @@
+# Site settings
+name: Vamsi Mukkamala
+title: Vamsi Mukkamala
+description: A software engineer focused on designing, building & automating things
+url: 'https://vmc99.github.io' # GitHub Pages URL
+baseurl: '/personal-website'
+email: vmuk99@gmail.com
+logo: /img/emojis/tech_vamsi.png
+resume: /static/Resume-latest.pdf
+github: https://github.com/vmc99
+social:
+  - title: email
+    url: mailto:vmuk99@gmail.com
+  - title: blog
+    url: /terminal-logs.html
+  - title: resume
+    url: /static/Resume-latest.pdf
+  - title: github
+    url: https://github.com/vmc99
+  - title: linkedin
+    url: https://www.linkedin.com/in/vmc99
+  - title: x
+    url: https://x.com/vamsi_mukkamala
+
+# Build settings
+markdown: kramdown
+
+exclude:
+  - 'Gemfile'
+  - 'Gemfile.lock'
+  - '*.gemspec'
+  - 'README.md'
+  - 'node_modules'
+  - 'build'
+  - 'gulpfile.js'
+  - 'package.json'
+
+keep_files:
+  - 'CNAME'
+  - '.git'
+  - '.gitignore'
+
+plugins_dir:
+  - jekyll-minifier
+  - jekyll-sitemap

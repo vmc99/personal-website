@@ -1,0 +1,78 @@
+- name: Anti-Pattern Resolutor
+  url: https://github.com/Andrei-Constantin-Programmer/Anti-Pattern-Resolutor
+  code: https://github.com/Andrei-Constantin-Programmer/Anti-Pattern-Resolutor
+  description: Local-first, agentic refactoring pipeline for Java that pairs SonarQube findings with LLM-based reasoning to detect smells/anti-patterns and propose file-scoped, behaviour-preserving edits. Changes are gated by compile + tests; public interfaces are preserved; static analysis is re-run for reporting only. Run artefacts (plans, diffs, logs) are persisted for auditability. <br> <br> Project made in collaboration with <b>UCL</b> and <b>IBM</b>.
+
+  used:
+    - thing: Python
+    - thing: LangChain
+    - thing: LangGraph
+    - thing: Ollama
+    - thing: vLLM
+    - thing: SonarQube
+    - thing: JaCoCo
+
+- name: Zoom Bot
+  url: https://github.com/vmc99/glearn-zoom-bot
+  code: https://github.com/vmc99/glearn-zoom-bot
+  description: Built a Python automation bot that attends online classes according to the schedule on Zoom by fetching links from our student portal and updates status on Discord server via Webhooks. Adopted by the entire 2022 CSE GITAM cohort during COVID-19
+  used:
+    - thing: Python
+    - thing: Selenium
+    - thing: PyAutoGUI
+    - thing: Discord Webhooks
+    - thing: OpenCV
+    - thing: SQLite
+
+- name: Unmasking Human Faces
+  url: https://github.com/vmc99/Mini-Project
+  code: https://github.com/vmc99/Mini-Project
+  description:  Designed a deep learning model for face mask removal and facial inpainting, reconstructing occluded facial regions with realistic outputs.
+  used:
+    - thing: Python
+    - thing: PyTorch
+    - thing: OpenCV
+    - thing: Detectron2
+    - thing: labelflow
+    - thing: Google Colab
+    - thing: GANS
+    - thing: Streamlit
+
+- name: Pixely
+  url: https://github.com/vmc99/Pixely-Image-Modifier
+  code: https://github.com/vmc99/Pixely-Image-Modifier
+  description: Pixely is a fun project based on image modification/editing. With pixely we can add filters, backgrounds and so on. A unique concept called image steganography can be applied to an image using pixely. Steganography a technique of hiding secret data within an ordinary, non-secret, file or message in order to avoid detection. The secret data is then extracted at its destination. <br><br> Check out the App <a class="underline-link" href="https://vmc99.github.io/Pixely-Image-Modifier/" target="_blank">Here</a>.
+
+  used:
+    - thing: JavaScript
+    - thing: HTML
+    - thing: CSS
+    - thing: Steganography
+
+
+- name: Chameleon
+  url: https://github.com/mustafa3252/chameleon
+  code: https://github.com/mustafa3252/chameleon
+  description:
+    Chameleon is a powerful web application designed to breathe new life into legacy codebases. By leveraging the analytical power of AI, it provides instant, in-depth analysis and modernization insights for archaic file types like COBOL and JCL and transforms them into Python code (.py files). Simply upload your files and let Chameleon reveal the underlying structure, logic, and potential for transformation.
+    <br>
+    <a class="small" href="https://luma.com/hacking-agents-hackathon-london?tk=yiboDk">🏆 Won Best Use of Langflow at Hacking Agents Hackathon London 2025 🏆</a>
+  used:
+    - thing: Langflow
+    - thing: Prompt Engineering
+    - thing: Python
+    - thing: COBOL
+
+- name: Digit Recognizer
+  url: https://github.com/vmc99/digit-recognizer-mnist-app
+  code: https://github.com/vmc99/digit-recognizer-mnist-app
+  description: A Simple digit recognizing web app that classifies handwritten digits by taking the user input from the canvas and also displayes the probabilities.  <br><br> Check out the App <a class="underline-link" href="https://share.streamlit.io/vmc99/digit-recognizer-mnist-app/main/app.py" target="_blank">Here</a>.
+  # img: weather
+  used:
+    - thing: Python
+    - thing: Streamlit
+    - thing: PyTorch
+    - thing: ResNet
+    - thing: MNIST
+
+

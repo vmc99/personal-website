@@ -1,0 +1,29 @@
+<svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="dynamoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF9900;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF6600;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- AWS Orange background circle -->
+  <circle cx="64" cy="64" r="58" fill="url(#dynamoGradient)"/>
+  
+  <!-- Database cylinder representation -->
+  <ellipse cx="64" cy="35" rx="35" ry="8" fill="#FFF" opacity="0.9"/>
+  <rect x="29" y="35" width="70" height="35" fill="#FFF" opacity="0.9"/>
+  <ellipse cx="64" cy="70" rx="35" ry="8" fill="#FFF" opacity="0.9"/>
+  <ellipse cx="64" cy="85" rx="35" ry="8" fill="#FFF" opacity="0.9"/>
+  
+  <!-- Database lines to show data layers -->
+  <line x1="35" y1="45" x2="93" y2="45" stroke="url(#dynamoGradient)" stroke-width="2"/>
+  <line x1="35" y1="55" x2="93" y2="55" stroke="url(#dynamoGradient)" stroke-width="2"/>
+  <line x1="35" y1="65" x2="93" y2="65" stroke="url(#dynamoGradient)" stroke-width="2"/>
+  
+  <!-- Lightning bolt for performance -->
+  <path d="M50 40 L60 50 L55 55 L65 65 L55 55 L60 50" fill="url(#dynamoGradient)" stroke="none"/>
+  
+  <!-- "DB" text -->
+  <text x="64" y="105" font-family="Arial, sans-serif" font-size="12" font-weight="bold" 
+        text-anchor="middle" fill="#FFF">DB</text>
+</svg>

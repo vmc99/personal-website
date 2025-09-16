@@ -1,0 +1,41 @@
+- company: IBM
+  url: https://research.ibm.com
+  time: June 2025 - Present
+  position: Software Engineer
+  location: London, United Kingdom
+  description:
+    - Worked in a UCL x IBM Research Collaborative program.
+    - Designed and implemented end-to-end architecture for an AI-driven legacy code remediation system, leveraging LangChain, LangGraph to build agentic workflows.
+    - Integrated vLLM (for industry standard inference), LangSmith instrumentation, and JaCoCo test coverage analysis, optimizing agent performance and ensuring measurable quality improvements.
+    - Provisioned and optimized project environments with vLLM, Ollama, and reproducible virtual environments; engineered a full-repository processing pipeline enabling scalable, multi-file agentic workflows.
+
+- company: University College London (UCL)
+  url: https://www.ucl.ac.uk/
+  time: January 2025 - Present
+  position: CS Student Ambassador
+  location: London, United Kingdom
+  description:
+    - Represented UCL at various outreach events, promoting the university's programs and initiatives to prospective students.
+    - Collaborated with faculty and staff to enhance the student experience and provide feedback on academic programs.
+    - Assisted in the organization of workshops and seminars, fostering a sense of community among students and faculty.
+
+- company: Accenture, Cigna (client)
+  url: https://www.accenture.com/
+  time: August 2022 - May 2024
+  position: Associate Software Engineer
+  location: Hyderabad, India
+  description:
+    - Developed an automated claims workflow to accurately calculate payments owed by Cigna (health insurance) across claims received from multiple medical pharmacies.
+    - Designed and executed test strategies, test processes, and ETL automation frameworks, improving validation efficiency and reducing manual effort by 80%. Executed and monitored AWS jobs and managed S3 storage buckets.
+    -  Applied Agile methodology using JIRA and Confluence for project planning, tracking, and documentation; increased delivery speed and team collaboration by 30%, ensuring consistent project success.
+    - Streamlined data reporting by extracting and transforming data from Oracle DB, generating concise Excel reports and delivering key insights through PowerPoint presentations, enabling data-driven decision-making by management.
+
+- company: Blobcity
+  url: https://blobcity.com/home/
+  time: July 2021 - September 2021
+  position: AI Intern
+  location: Remote (HQ Delaware, USA)
+  description:
+    - Contributed to the development of around 20 machine learning and deep learning model templates with the Data Science team, reducing setup time for experiments by 40% and accelerating prototyping.
+    - Leveraged Google Colab to optimize model training, enabling faster iteration and reproducibility across projects.
+    - Published templates on GitHub and Blobcity Cloud, increasing open-source adoption and contributing to the company's developer community engagement.

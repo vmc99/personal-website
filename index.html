@@ -1,0 +1,29 @@
+---
+layout: default
+---
+
+<div id="site">
+  {% include loading.html %}
+  {% include navbar.html %}
+  <div class="main-logo">
+    <a href="#top" onclick="scrollToTop()">
+      {% if site.baseurl and site.baseurl != '' %}
+        <img src="{{ site.baseurl }}/img/logo/logo.svg" alt="Logo" />
+      {% else %}
+        <img src="img/logo/logo.svg" alt="Logo" />
+      {% endif %}
+    </a>
+  </div>
+  {% include switch.html %}
+  {% include social-top.html %}
+  {% include intro.html %}
+  {% include background.html %}
+  {% include skills.html %}
+  {% include experience.html %}
+  {% include education.html %}
+  <!-- {% include featured-projects.html %} -->
+  <!-- Using other-projects as featured projects for now -->
+  {% include other-projects.html %}
+  {% include footer.html %}
+  {% include top-button.html %}
+</div>

@@ -1,0 +1,133 @@
+// Main logo that appears on page load
+.main-logo {
+  position: absolute;
+  top: 28px;
+  left: 50px; // Match the navbar logo position (30px navbar padding + 20px content padding)
+  z-index: 4;
+  transition: opacity 0.3s ease;
+
+  @include mobile {
+    top: 15px;
+    left: 35px; // Match mobile navbar position (20px navbar padding + 15px content padding)
+  }
+
+  // Hide when navbar is visible
+  body.navbar-visible & {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  a {
+    display: inline-block;
+    transition: transform 0.2s ease;
+    
+    &:hover {
+      transform: scale(1.05);
+    }
+    
+    img {
+      height: 34px;
+      width: auto;
+      display: block;
+      
+      @include mobile {
+        height: 30px;
+      }
+    }
+  }
+}
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 12px 30px;
+  transform: translateY(-100%);
+  transition: transform 0.3s ease-in-out;
+
+  @include mobile {
+    padding: 8px 20px;
+  }
+
+  &.visible {
+    transform: translateY(0);
+  }
+
+  &__content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: none; // Remove max-width constraint
+    margin: 0;
+    width: 100%;
+    padding: 0 0; // Remove extra padding
+    padding-left: 20px; // Add left padding to move logo more to the left
+    
+    @include mobile {
+      padding-left: 15px;
+    }
+  }
+
+  &__logo {
+    flex-shrink: 0;
+    
+    a {
+      display: inline-block;
+      transition: transform 0.2s ease;
+      
+      &:hover {
+        transform: scale(1.05);
+      }
+      
+      img {
+        height: 34px;
+        width: auto;
+        display: block;
+        
+        @include mobile {
+          height: 30px;
+        }
+      }
+    }
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    position: absolute;
+    right: 30px; // Position it exactly like the original
+    top: 50%;
+    transform: translateY(-50%);
+    
+    @include mobile {
+      right: 20px;
+    }
+    
+    // Remove the individual positioning since we're positioning the container
+    .social-top {
+      position: static;
+      right: auto;
+      margin-right: 30px; // Add spacing between social and switch
+      
+      @include mobile {
+        margin-right: 20px;
+      }
+    }
+    
+    .switch-wrapper {
+      position: static;
+    }
+  }
+
+  // Dark theme adjustments
+  body.night & {
+    background: rgba(22, 28, 30, 0.55); // (23, 25, 35, 0.95)
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+}
