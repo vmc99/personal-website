@@ -71,7 +71,7 @@ databases:
   - item: MongoDB
     icon: mongodb
   - item: DynamoDB
-    icon: amazondynamodb
+    icon: amazonwebservices
   - item: Redis
     icon: redis
 
