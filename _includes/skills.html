@@ -8,7 +8,7 @@
         <ul>
           {% for language in site.data.skills.languages %}
           <li class="skillz__category__item">
-            <img src="/img/skills/{{language.icon}}.svg" alt="{{language.item}}" class="skill-icon" onerror="this.src='/img/skills/code.svg'">
+            <img src="{{ site.baseurl }}/img/skills/{{language.icon}}.svg" alt="{{language.item}}" class="skill-icon" onerror="this.src='{{ site.baseurl }}/img/skills/code.svg'">
             {{language.item}}
           </li>
           {% endfor %}
@@ -19,7 +19,7 @@
         <ul>
           {% for framework in site.data.skills.frameworks %}
           <li class="skillz__category__item">
-            <img src="/img/skills/{{framework.icon}}.svg" alt="{{framework.item}}" class="skill-icon" onerror="this.src='/img/skills/code.svg'">
+            <img src="{{ site.baseurl }}/img/skills/{{framework.icon}}.svg" alt="{{framework.item}}" class="skill-icon" onerror="this.src='{{ site.baseurl }}/img/skills/code.svg'">
             {{framework.item}}
           </li>
           {% endfor %}
@@ -30,7 +30,7 @@
         <ul>
           {% for tool in site.data.skills.tools %}
           <li class="skillz__category__item">
-            <img src="/img/skills/{{tool.icon}}.svg" alt="{{tool.item}}" class="skill-icon" onerror="this.src='/img/skills/code.svg'">
+            <img src="{{ site.baseurl }}/img/skills/{{tool.icon}}.svg" alt="{{tool.item}}" class="skill-icon" onerror="this.src='{{ site.baseurl }}/img/skills/code.svg'">
             {{tool.item}}
           </li>
           {% endfor %}
@@ -41,7 +41,7 @@
         <ul>
           {% for thing in site.data.skills.databases %}
           <li class="skillz__category__item">
-            <img src="/img/skills/{{thing.icon}}.svg" alt="{{thing.item}}" class="skill-icon" onerror="this.src='/img/skills/code.svg'">
+            <img src="{{ site.baseurl }}/img/skills/{{thing.icon}}.svg" alt="{{thing.item}}" class="skill-icon" onerror="this.src='{{ site.baseurl }}/img/skills/code.svg'">
             {{thing.item}}
           </li>
           {% endfor %}

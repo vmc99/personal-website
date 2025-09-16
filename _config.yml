@@ -6,7 +6,7 @@ url: 'https://vmc99.github.io' # GitHub Pages URL
 baseurl: '/personal-website'
 email: vmuk99@gmail.com
 logo: /img/emojis/tech_vamsi.png
-resume: /static/resume.pdf
+resume: /personal-website/static/resume.pdf
 github: https://github.com/vmc99
 social:
   - title: email
@@ -14,7 +14,7 @@ social:
   - title: blog
     url: /terminal-logs.html
   - title: resume
-    url: /static/resume.pdf
+    url: /personal-website/static/resume.pdf
   - title: github
     url: https://github.com/vmc99
   - title: linkedin
