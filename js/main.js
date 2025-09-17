@@ -216,5 +216,54 @@ document.addEventListener('DOMContentLoaded', function() {
         navbarMenu.classList.remove('mobile-menu-open');
       });
     });
+    
+    // Close mobile menu when scrolling to top
+    let lastScrollTop = 0;
+    window.addEventListener('scroll', function() {
+      const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      
+      // If scrolled to top (within 100px of top)
+      if (currentScrollTop < 100) {
+        mobileMenuToggle.classList.remove('active');
+        navbarMenu.classList.remove('mobile-menu-open');
+        // Also close social-top menu
+        const socialTopHamburger = document.querySelector('.social-top__hamburger');
+        const socialTopMenu = document.querySelector('.social-top__menu');
+        if (socialTopHamburger && socialTopMenu) {
+          socialTopHamburger.classList.remove('active');
+          socialTopMenu.classList.remove('social-menu-open');
+        }
+      }
+      
+      lastScrollTop = currentScrollTop;
+    });
+  }
+  
+  // Mobile hamburger menu functionality for social-top
+  const socialTopHamburger = document.querySelector('.social-top__hamburger');
+  const socialTopMenu = document.querySelector('.social-top__menu');
+  
+  if (socialTopHamburger && socialTopMenu) {
+    socialTopHamburger.addEventListener('click', function() {
+      socialTopHamburger.classList.toggle('active');
+      socialTopMenu.classList.toggle('social-menu-open');
+    });
+    
+    // Close social-top menu when clicking outside
+    document.addEventListener('click', function(event) {
+      if (!socialTopHamburger.contains(event.target) && !socialTopMenu.contains(event.target)) {
+        socialTopHamburger.classList.remove('active');
+        socialTopMenu.classList.remove('social-menu-open');
+      }
+    });
+    
+    // Close social-top menu when clicking on social links
+    const socialTopLinks = socialTopMenu.querySelectorAll('a');
+    socialTopLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        socialTopHamburger.classList.remove('active');
+        socialTopMenu.classList.remove('social-menu-open');
+      });
+    });
   }
 });

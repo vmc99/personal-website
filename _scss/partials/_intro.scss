@@ -17,13 +17,13 @@
   
   // Reduce padding for portrait mobile screens when VR image is hidden
   @media screen and (max-width: 768px) and (orientation: portrait) {
-    padding: 50px 30px;
+    padding: 80px 30px 40px; // Increased top padding from 50px to 80px
     min-height: auto;
   }
   
   // Further reduce for smaller portrait screens
   @media screen and (max-width: 480px) and (orientation: portrait) {
-    padding: 30px 20px;
+    padding: 90px 20px 20px; // Increased top padding from 30px to 90px
   }
 
   /* two-column responsive wrapper */

@@ -1,10 +1,18 @@
 <div class="social-top" role="navigation" aria-label="Social links">
-  {% for link in site.social %}
-  <a href="{{ link.url }}" target="_blank" title="{{ link.title }}">
-    <img src="{{ site.baseurl }}/img/social/{{ link.title }}.svg" alt="{{ link.title }}" />
-    <span class="text">{{ link.title }}</span>
-  </a>
-  {% endfor %}
+  <!-- Hamburger button for mobile social menu -->
+  <button class="social-top__hamburger" id="social-menu-toggle" aria-label="Toggle social menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
   
+  <div class="social-top__menu" id="social-menu">
+    {% for link in site.social %}
+    <a href="{{ link.url }}" target="_blank" title="{{ link.title }}">
+      <img src="{{ site.baseurl }}/img/social/{{ link.title }}.svg" alt="{{ link.title }}" />
+      <span class="text">{{ link.title }}</span>
+    </a>
+    {% endfor %}
+  </div>
 </div>
 
