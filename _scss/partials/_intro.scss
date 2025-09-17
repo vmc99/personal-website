@@ -15,15 +15,15 @@
     padding: 70px 50px;
   }
   
-  // Reduce padding for landscape mobile screens (when height is limited)
-  @media screen and (max-height: 600px) and (orientation: landscape) {
-    padding: 40px 50px;
+  // Reduce padding for portrait mobile screens when VR image is hidden
+  @media screen and (max-width: 768px) and (orientation: portrait) {
+    padding: 50px 30px;
     min-height: auto;
   }
   
-  // Further reduce for very small landscape screens
-  @media screen and (max-height: 500px) and (orientation: landscape) {
-    padding: 20px 50px;
+  // Further reduce for smaller portrait screens
+  @media screen and (max-width: 480px) and (orientation: portrait) {
+    padding: 30px 20px;
   }
 
   /* two-column responsive wrapper */
@@ -57,12 +57,12 @@
       gap: 50px;
     }
     
-    // Reduce gaps for landscape mobile screens
-    @media screen and (max-height: 600px) and (orientation: landscape) {
+    // Reduce gaps for portrait mobile screens
+    @media screen and (max-width: 768px) and (orientation: portrait) {
       gap: 30px;
     }
     
-    @media screen and (max-height: 500px) and (orientation: landscape) {
+    @media screen and (max-width: 480px) and (orientation: portrait) {
       gap: 20px;
     }
   }
