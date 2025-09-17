@@ -2,19 +2,19 @@
 name: Vamsi Mukkamala
 title: Vamsi Mukkamala
 description: A software engineer focused on designing, building & automating things
-url: 'https://vmc99.github.io' # GitHub Pages URL
-baseurl: '/personal-website'
+url: 'https://mvamsi.me' # Custom domain URL
+baseurl: '' # No baseurl needed for custom domain
 email: vmuk99@gmail.com
 logo: /img/emojis/tech_vamsi.png
-resume: /personal-website/static/resume.pdf
+resume: /static/resume.pdf
 github: https://github.com/vmc99
 social:
   - title: email
     url: mailto:vmuk99@gmail.com
   - title: blog
-    url: /personal-website/terminal-logs.html
+    url: /terminal-logs.html
   - title: resume
-    url: /personal-website/static/resume.pdf
+    url: /static/resume.pdf
   - title: github
     url: https://github.com/vmc99
   - title: linkedin
