@@ -2,9 +2,40 @@
 <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>{{ site.title }}</title>
-<link rel="icon" type="image/png" href="{{ site.baseurl }}/img/favicon.png">
-<link rel="apple-touch-icon" href="{{ site.baseurl }}/img/favicon.png">
-<link rel="shortcut icon" href="{{ site.baseurl }}/img/favicon.png">
+
+<!-- Favicon declarations for all browsers and devices -->
+<link rel="icon" type="image/svg+xml" href="{{ site.baseurl }}/img/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="{{ site.baseurl }}/img/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="{{ site.baseurl }}/img/favicon-16.png">
+<link rel="shortcut icon" href="{{ site.baseurl }}/favicon.ico">
+
+<!-- Apple Touch Icons for iOS devices -->
+<link rel="apple-touch-icon" sizes="180x180" href="{{ site.baseurl }}/img/favicon.png">
+<link rel="apple-touch-icon" sizes="152x152" href="{{ site.baseurl }}/img/favicon.png">
+<link rel="apple-touch-icon" sizes="144x144" href="{{ site.baseurl }}/img/favicon.png">
+<link rel="apple-touch-icon" sizes="120x120" href="{{ site.baseurl }}/img/favicon.png">
+<link rel="apple-touch-icon" sizes="114x114" href="{{ site.baseurl }}/img/favicon.png">
+<link rel="apple-touch-icon" sizes="76x76" href="{{ site.baseurl }}/img/favicon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="{{ site.baseurl }}/img/favicon.png">
+<link rel="apple-touch-icon" sizes="60x60" href="{{ site.baseurl }}/img/favicon.png">
+<link rel="apple-touch-icon" sizes="57x57" href="{{ site.baseurl }}/img/favicon.png">
+
+<!-- Android Chrome icons -->
+<link rel="icon" type="image/png" sizes="192x192" href="{{ site.baseurl }}/img/favicon.png">
+<link rel="icon" type="image/png" sizes="128x128" href="{{ site.baseurl }}/img/favicon.png">
+
+<!-- Safari Pinned Tab -->
+<link rel="mask-icon" href="{{ site.baseurl }}/img/favicon.svg" color="#171c1e">
+
+<!-- Windows Tile -->
+<meta name="msapplication-TileColor" content="#171c1e">
+<meta name="msapplication-TileImage" content="{{ site.baseurl }}/img/favicon.png">
+
+<!-- Theme color for mobile browsers -->
+<meta name="theme-color" content="#171c1e">
+
+<!-- Web App Manifest -->
+<link rel="manifest" href="{{ site.baseurl }}/site.webmanifest">
 <meta property="og:title" content="{{site.title}}" />
 <meta property="og:description" content="{{site.description}}" />
 <meta property="og:type" content="website" />

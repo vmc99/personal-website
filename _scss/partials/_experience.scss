@@ -81,9 +81,19 @@
       transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
       opacity: 1;
       
+      @include mobile {
+        max-height: none; /* Remove height restriction on mobile */
+        overflow: visible; /* Allow full content to show */
+      }
+      
       &.collapsed {
         max-height: 0;
         opacity: 0;
+        
+        @include mobile {
+          max-height: 0; /* Keep collapsed state on mobile */
+          overflow: hidden; /* Hide when collapsed */
+        }
       }
       
       li {
@@ -93,6 +103,13 @@
         line-height: 1.5;
         font-size: 0.9rem;
         
+        @include mobile {
+          font-size: 0.85rem; /* Slightly smaller on mobile */
+          line-height: 1.6; /* Better line spacing */
+          margin-bottom: 12px; /* More spacing between items */
+          padding-right: 10px; /* Prevent text from touching edges */
+        }
+        
         &:before {
           content: '▶';
           position: absolute;
@@ -100,6 +117,10 @@
           color: $blue;
           font-size: 0.7rem;
           top: 4px;
+          
+          @include mobile {
+            top: 5px; /* Adjust bullet position on mobile */
+          }
         }
       }
     }
