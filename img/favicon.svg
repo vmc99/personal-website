@@ -1,7 +1,5 @@
 <svg width="32" height="32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Dark circle background -->
-  <circle cx="50" cy="50" r="50" fill="#171c1e"></circle>
-  <!-- Logo circles with overlapping positioning like logo.svg -->
+  <!-- Logo circles with overlapping positioning (no background) -->
   <circle cx="30" cy="25" r="12" fill="#F24E1E"></circle>
   <circle cx="40" cy="50" r="12" fill="#FF7262"></circle>
   <circle cx="70" cy="25" r="12" fill="#1ABCFE"></circle>
