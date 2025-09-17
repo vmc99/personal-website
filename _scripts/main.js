@@ -188,3 +188,33 @@ function toggleJobDescription(toggleElement) {
     text.textContent = 'More Details';
   }
 }
+
+// Mobile menu functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+  const navbarMenu = document.getElementById('navbar-menu');
+  
+  if (mobileMenuToggle && navbarMenu) {
+    mobileMenuToggle.addEventListener('click', function() {
+      mobileMenuToggle.classList.toggle('active');
+      navbarMenu.classList.toggle('mobile-menu-open');
+    });
+    
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function(event) {
+      if (!mobileMenuToggle.contains(event.target) && !navbarMenu.contains(event.target)) {
+        mobileMenuToggle.classList.remove('active');
+        navbarMenu.classList.remove('mobile-menu-open');
+      }
+    });
+    
+    // Close mobile menu when clicking on social links
+    const socialLinks = navbarMenu.querySelectorAll('.social a');
+    socialLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        mobileMenuToggle.classList.remove('active');
+        navbarMenu.classList.remove('mobile-menu-open');
+      });
+    });
+  }
+});

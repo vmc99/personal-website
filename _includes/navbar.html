@@ -10,7 +10,14 @@
       </a>
     </div>
     
-    <div class="navbar__right">
+    <!-- Hamburger menu button for mobile -->
+    <button class="navbar__hamburger" id="mobile-menu-toggle" aria-label="Toggle mobile menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    
+    <div class="navbar__right" id="navbar-menu">
       {% include social-top.html %}
       {% include switch.html %}
     </div>

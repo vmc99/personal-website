@@ -23,10 +23,17 @@ body {
   font-family: $Apercu;
   line-height: 1.5;
   width: 100%;
+  
+  // CSS custom properties for theming
+  --text-color: #{$dark-grey};
+  --bg-color: #{$white};
 
   &.night {
     background-color: $night;
     color: $slate;
+    --text-color: #{$slate};
+    --bg-color: #{$night};
+    
     ::selection {
       color: $black;
       background: $yellow;

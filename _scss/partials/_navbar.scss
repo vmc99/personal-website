@@ -73,6 +73,60 @@
     }
   }
 
+  &__hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 24px;
+    height: 18px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1001;
+    
+    @include small-mobile {
+      display: flex;
+    }
+    
+    span {
+      display: block;
+      height: 2px;
+      width: 100%;
+      background: var(--text-color);
+      transition: all 0.3s ease;
+      transform-origin: center;
+      
+      &:nth-child(1) {
+        transform: translateY(0);
+      }
+      
+      &:nth-child(2) {
+        opacity: 1;
+      }
+      
+      &:nth-child(3) {
+        transform: translateY(0);
+      }
+    }
+    
+    &.active {
+      span {
+        &:nth-child(1) {
+          transform: translateY(8px) rotate(45deg);
+        }
+        
+        &:nth-child(2) {
+          opacity: 0;
+        }
+        
+        &:nth-child(3) {
+          transform: translateY(-8px) rotate(-45deg);
+        }
+      }
+    }
+  }
+
   &__logo {
     flex-shrink: 0;
     
@@ -109,6 +163,36 @@
       right: 20px;
     }
     
+    @include small-mobile {
+      position: fixed;
+      top: 70px;
+      right: 0;
+      left: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      flex-direction: column;
+      gap: 20px;
+      transform: translateY(-100%);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 999;
+      
+      &.mobile-menu-open {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+      }
+      
+      // Dark theme for mobile menu
+      body.night & {
+        background: rgba(22, 28, 30, 0.95);
+        border-bottom-color: rgba(255, 255, 255, 0.1);
+      }
+    }
+    
     // Remove the individual positioning since we're positioning the container
     .social-top {
       position: static;
@@ -118,10 +202,24 @@
       @include mobile {
         margin-right: 20px;
       }
+      
+      @include small-mobile {
+        margin-right: 0;
+        
+        .social {
+          justify-content: center;
+          gap: 20px;
+        }
+      }
     }
     
     .switch-wrapper {
       position: static;
+      
+      @include small-mobile {
+        display: flex;
+        justify-content: center;
+      }
     }
   }
 

@@ -4,6 +4,7 @@
   display: block;
   max-width: 1440px;
   margin: 0 auto;
+  
   @include weird-medium {
     padding: 120px 70px;
   }
@@ -12,6 +13,17 @@
   }
   @include mobile {
     padding: 70px 50px;
+  }
+  
+  // Reduce padding for landscape mobile screens (when height is limited)
+  @media screen and (max-height: 600px) and (orientation: landscape) {
+    padding: 40px 50px;
+    min-height: auto;
+  }
+  
+  // Further reduce for very small landscape screens
+  @media screen and (max-height: 500px) and (orientation: landscape) {
+    padding: 20px 50px;
   }
 
   /* two-column responsive wrapper */
@@ -43,6 +55,15 @@
     gap: 60px; /* reduced spacing between lines */
     @media screen and (max-width: 930px) {
       gap: 50px;
+    }
+    
+    // Reduce gaps for landscape mobile screens
+    @media screen and (max-height: 600px) and (orientation: landscape) {
+      gap: 30px;
+    }
+    
+    @media screen and (max-height: 500px) and (orientation: landscape) {
+      gap: 20px;
     }
   }
 
