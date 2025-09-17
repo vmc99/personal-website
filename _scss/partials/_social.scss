@@ -11,34 +11,27 @@
   transition: opacity 0.3s ease;
 
   @include mobile {
-    top: 14px;
-    right: 120px;
+    position: absolute; /* Use absolute positioning relative to social-top container */
+    top: 26px; /* Match theme toggle top position exactly */
+    right: 130px; /* Position to the left of theme toggle (20px + 45px + 20px padding) */
+    transform: none; /* Remove transform that might be causing issues */
     gap: 10px;
-    max-width: calc(100% - 150px);
-  }
-
-  // When inside navbar, use static positioning
-  .navbar & {
-    position: static;
-    top: auto;
-    right: auto;
-    left: auto;
     max-width: none;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-    margin: 0; // Remove any margins when in navbar
+    width: auto;
+    justify-content: flex-end; /* Align hamburger to the right */
   }
 
-  // Hide original position when navbar is visible
+  // Hide when navbar is visible
   body.navbar-visible & {
     opacity: 0;
     pointer-events: none;
   }
 
-  // But show when inside navbar
-  body.navbar-visible .navbar & {
-    opacity: 1;
-    pointer-events: auto;
+  // On mobile, only show the hamburger, hide the regular menu
+  @include mobile {
+    .social-top__menu:not(.social-menu-open) {
+      display: none !important;
+    }
   }
 
   &__hamburger {
@@ -52,9 +45,12 @@
     cursor: pointer;
     padding: 0;
     z-index: 1001;
+    position: relative;
+    order: 2; /* Ensure hamburger appears after menu on mobile */
     
     @include mobile {
       display: flex;
+      position: relative; /* Ensure it stays within the container */
     }
     
     span {
@@ -99,27 +95,31 @@
     display: flex;
     gap: 14px;
     align-items: center;
+    order: 1; /* Menu appears first */
     
     @include mobile {
-      gap: 10px;
-      position: absolute;
-      top: 30px;
-      right: 0;
+      display: none; /* Hidden by default on mobile */
+      position: fixed; /* Fixed positioning like navbar menu */
+      top: 70px; /* Position below navbar area */
+      left: 0; /* Full width centering like navbar */
+      right: 0; /* Full width centering like navbar */
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(10px);
-      border: 1px solid rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-      padding: 15px;
-      flex-direction: column;
-      gap: 15px;
-      transform: translateY(-10px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 0; /* Remove border radius for full width */
+      padding: 20px; /* Match navbar padding */
+      flex-direction: row; /* Keep horizontal layout */
+      gap: 15px; /* Slightly reduced gap for better spacing */
+      justify-content: center; /* Center the icons */
+      z-index: 998; /* Slightly below navbar menu */
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      transform: translateY(-100%); /* Start hidden above */
       opacity: 0;
       visibility: hidden;
       transition: all 0.3s ease;
-      z-index: 999;
-      min-width: 150px;
       
       &.social-menu-open {
+        display: flex;
         transform: translateY(0);
         opacity: 1;
         visibility: visible;
@@ -128,26 +128,51 @@
       // Dark theme for social menu
       body.night & {
         background: rgba(22, 28, 30, 0.95);
-        border-color: rgba(255, 255, 255, 0.1);
+        border-bottom-color: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      }
+      
+      // Style the social links inside dropdown
+      a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 32px;
+        height: 32px;
+        padding: 4px;
+        
+        img {
+          width: 18px !important;
+          height: 18px !important;
+          display: block !important;
+        }
+        
+        .text {
+          display: none !important; /* Hide text in dropdown */
+        }
       }
     }
     
-    // When inside navbar, use normal flex layout
-    .navbar & {
-      @include mobile {
-        position: static;
-        background: none;
-        border: none;
-        padding: 0;
-        flex-direction: row;
-        transform: none;
-        opacity: 1;
-        visibility: visible;
-        min-width: auto;
+    // Hide menu on mobile to show only hamburger, unless it's open
+    @include mobile {
+      &:not(.social-menu-open) {
+        display: none !important;
       }
     }
   }
 
+  // On desktop, hide hamburger and show menu
+  @media screen and (min-width: 481px) {
+    .social-top__hamburger {
+      display: none !important;
+    }
+    
+    .social-top__menu {
+      display: flex !important;
+    }
+  }
+
+  // Social link styles
   a {
     @include transition;
     display: inline-flex;
@@ -158,6 +183,90 @@
     letter-spacing: 1px;
     font-size: 0.8rem;
     white-space: nowrap;
+    text-decoration: none;
+    
+    &:hover,
+    &:focus {
+      color: $off-white;
+    }
+  }
+
+  /* Dark theme adjustments */
+  body.night & {
+    a {
+      color: $off-white;
+      &:hover,
+      &:focus {
+        color: $yellow;
+      }
+    }
+  }
+
+  img {
+    width: 22px;
+    height: 22px;
+    display: none; /* hide icons when there is text */
+    transition: opacity 0.3s ease;
+    
+    @include little-desktop {
+      display: inline-block; /* show icons on smaller screens */
+    }
+    
+    &:hover {
+      opacity: 0.7;
+    }
+    
+    /* Make email icon slightly larger */
+    &[src*="email.svg"] {
+      width: 26px;
+      height: 26px;
+    }
+  }
+
+  /* Dark theme adjustments */
+  body.night & {
+    img {
+      opacity: 0.8;
+      
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+
+  .text {
+    margin-left: 6px;
+    display: inline;
+    @include little-desktop {
+      display: none; /* icons only on smaller screens */
+    }
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.social {
+  a {
+    @include transition;
+    display: inline-flex;
+    align-items: center;
+    color: $blue;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    text-decoration: none;
+    
     &:hover,
     &:focus {
       color: $off-white;

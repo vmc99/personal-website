@@ -1,3 +1,9 @@
+// Prevent scrolling when loading screen is active
+body.loading-active {
+  overflow: hidden;
+  height: 100%;
+}
+
 .loading-screen {
   position: fixed;
   top: 0;
@@ -36,9 +42,9 @@
   background-color: var(--color);
   animation: loading-rotate 2s linear infinite;
   animation-delay: var(--delay);
-  transform-origin: 30px 30px; // Center point for rotation
-  top: 0;
-  left: 24px; // Center horizontally
+  transform-origin: 30px 30px; // Center point for rotation (center of 60px container)
+  top: 24px; // Center vertically within 60px container
+  // left: 5px; // Shift slightly left from center (was 24px)
 }
 
 @keyframes loading-rotate {

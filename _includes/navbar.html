@@ -18,7 +18,18 @@
     </button>
     
     <div class="navbar__right" id="navbar-menu">
-      {% include social-top.html %}
+      <div class="social">
+        {% for link in site.social %}
+        <a href="{{ link.url }}" target="_blank" title="{{ link.title }}">
+          {% if site.baseurl and site.baseurl != '' %}
+            <img src="{{ site.baseurl }}/img/social/{{ link.title }}.svg" alt="{{ link.title }}" />
+          {% else %}
+            <img src="img/social/{{ link.title }}.svg" alt="{{ link.title }}" />
+          {% endif %}
+          <span class="text">{{ link.title }}</span>
+        </a>
+        {% endfor %}
+      </div>
       {% include switch.html %}
     </div>
   </div>

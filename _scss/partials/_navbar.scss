@@ -153,7 +153,7 @@
   &__right {
     display: flex;
     align-items: center;
-    gap: 0;
+    gap: 30px; // Add gap between social container and theme toggle
     position: absolute;
     right: 30px; // Position it exactly like the original
     top: 50%;
@@ -162,6 +162,7 @@
     // Show normal navbar on larger screens
     @media screen and (min-width: 481px) {
       right: 30px;
+      gap: 30px; // Maintain gap on larger screens
     }
     
     @include mobile {
@@ -194,24 +195,26 @@
       }
     }
     
-    // Remove the individual positioning since we're positioning the container
-    .social-top {
-      position: static;
-      right: auto;
-      margin-right: 30px; // Add spacing between social and switch
-      
-      // Keep normal spacing on larger screens
-      @media screen and (min-width: 481px) {
-        margin-right: 30px;
-      }
+    // Style the social links container in navbar
+    .social {
+      display: flex;
+      align-items: center;
+      gap: 20px; // Space between individual social icons
       
       @include mobile {
-        margin-right: 0;
-        
-        .social {
-          justify-content: center;
-          gap: 20px;
-        }
+        flex-direction: row; // Keep horizontal layout on mobile too
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap; // Allow wrapping if needed
+      }
+      
+      // On smaller desktop screens, reduce gap between icons
+      @media screen and (max-width: 1200px) {
+        gap: 15px;
+      }
+      
+      @media screen and (max-width: 900px) {
+        gap: 12px;
       }
     }
     

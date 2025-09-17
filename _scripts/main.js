@@ -17,6 +17,8 @@ $(function() {
       loadingScreen.classList.add('fade-out');
       setTimeout(function() {
         loadingScreen.style.display = 'none';
+        // Remove loading-active class to re-enable scrolling
+        document.body.classList.remove('loading-active');
         // Show intro visual elements after loading completes
         if (introVisual) {
           introVisual.classList.add('loaded');
@@ -35,12 +37,15 @@ $(function() {
 
   const body = document.querySelector('body');
 
+  // Add loading-active class to body initially to prevent scrolling
+  body.classList.add('loading-active');
+
   // Get all toggle elements (both original and navbar)
   const toggles = document.querySelectorAll('[id="toggle"]');
   const inputs = document.querySelectorAll('[id="switch"]');
 
   // Set initial state to dark mode by default
-  inputs.forEach((input) => (input.checked = true));
+  inputs.forEach(input => (input.checked = true));
   body.classList.add('night');
 
   // Function to toggle theme
@@ -48,15 +53,15 @@ $(function() {
     const isNight = body.classList.contains('night');
     if (isNight) {
       body.classList.remove('night');
-      inputs.forEach((input) => (input.checked = false));
+      inputs.forEach(input => (input.checked = false));
     } else {
       body.classList.add('night');
-      inputs.forEach((input) => (input.checked = true));
+      inputs.forEach(input => (input.checked = true));
     }
   }
 
   // Add event listeners to all toggle buttons
-  toggles.forEach((toggle) => {
+  toggles.forEach(toggle => {
     toggle.addEventListener('click', function(e) {
       e.preventDefault(); // Prevent the default label click behavior
       toggleTheme();
@@ -73,7 +78,7 @@ $(function() {
           inp.checked = isChecked;
         }
       });
-      
+
       // Update theme based on the new state
       if (isChecked) {
         body.classList.add('night');
@@ -87,7 +92,7 @@ $(function() {
   const topButton = document.getElementById('top-button');
   const $topButton = $('#top-button');
   const navbar = document.getElementById('navbar');
-  
+
   let lastScrollY = window.scrollY;
   let isScrollingUp = false;
 
@@ -95,18 +100,18 @@ $(function() {
     'scroll',
     function() {
       const currentScrollY = window.scrollY;
-      
+
       // Determine scroll direction
       isScrollingUp = currentScrollY < lastScrollY;
       lastScrollY = currentScrollY;
-      
+
       // Show/hide top button
       if (currentScrollY > introHeight) {
         $topButton.fadeIn();
       } else {
         $topButton.fadeOut();
       }
-      
+
       if (currentScrollY > 100) {
         // Start showing after scrolling 100px
         if (isScrollingUp) {
@@ -175,7 +180,7 @@ function toggleJobDescription(toggleElement) {
   const description = toggleElement.nextElementSibling;
   const icon = toggleElement.querySelector('.toggle-icon');
   const text = toggleElement.querySelector('.toggle-text');
-  
+
   if (description.classList.contains('collapsed')) {
     // Expand
     description.classList.remove('collapsed');
@@ -193,70 +198,72 @@ function toggleJobDescription(toggleElement) {
 document.addEventListener('DOMContentLoaded', function() {
   const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
   const navbarMenu = document.getElementById('navbar-menu');
-  
+
   if (mobileMenuToggle && navbarMenu) {
     mobileMenuToggle.addEventListener('click', function() {
       mobileMenuToggle.classList.toggle('active');
       navbarMenu.classList.toggle('mobile-menu-open');
     });
-    
+
     // Close mobile menu when clicking outside
     document.addEventListener('click', function(event) {
-      if (!mobileMenuToggle.contains(event.target) && !navbarMenu.contains(event.target)) {
+      if (
+        !mobileMenuToggle.contains(event.target) &&
+        !navbarMenu.contains(event.target)
+      ) {
         mobileMenuToggle.classList.remove('active');
         navbarMenu.classList.remove('mobile-menu-open');
       }
     });
-    
-    // Close mobile menu when clicking on social links
-    const socialLinks = navbarMenu.querySelectorAll('.social a');
-    socialLinks.forEach(link => {
-      link.addEventListener('click', function() {
-        mobileMenuToggle.classList.remove('active');
-        navbarMenu.classList.remove('mobile-menu-open');
-      });
-    });
-    
+
     // Close mobile menu when scrolling to top
     let lastScrollTop = 0;
     window.addEventListener('scroll', function() {
-      const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      
+      const currentScrollTop =
+        window.pageYOffset || document.documentElement.scrollTop;
+
       // If scrolled to top (within 100px of top)
       if (currentScrollTop < 100) {
         mobileMenuToggle.classList.remove('active');
         navbarMenu.classList.remove('mobile-menu-open');
         // Also close social-top menu
-        const socialTopHamburger = document.querySelector('.social-top__hamburger');
+        const socialTopHamburger = document.querySelector(
+          '.social-top__hamburger'
+        );
         const socialTopMenu = document.querySelector('.social-top__menu');
         if (socialTopHamburger && socialTopMenu) {
           socialTopHamburger.classList.remove('active');
           socialTopMenu.classList.remove('social-menu-open');
         }
       }
-      
+
       lastScrollTop = currentScrollTop;
     });
   }
-  
+
   // Mobile hamburger menu functionality for social-top
   const socialTopHamburger = document.querySelector('.social-top__hamburger');
   const socialTopMenu = document.querySelector('.social-top__menu');
-  
+
   if (socialTopHamburger && socialTopMenu) {
-    socialTopHamburger.addEventListener('click', function() {
+    socialTopHamburger.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
       socialTopHamburger.classList.toggle('active');
       socialTopMenu.classList.toggle('social-menu-open');
     });
-    
+
     // Close social-top menu when clicking outside
     document.addEventListener('click', function(event) {
-      if (!socialTopHamburger.contains(event.target) && !socialTopMenu.contains(event.target)) {
+      if (
+        !socialTopHamburger.contains(event.target) &&
+        !socialTopMenu.contains(event.target)
+      ) {
         socialTopHamburger.classList.remove('active');
         socialTopMenu.classList.remove('social-menu-open');
       }
     });
-    
+
     // Close social-top menu when clicking on social links
     const socialTopLinks = socialTopMenu.querySelectorAll('a');
     socialTopLinks.forEach(link => {

@@ -29,13 +29,27 @@
     &__more {
       margin-top: 30px;
       margin-bottom: 20px;
+      
+      @include mobile {
+        padding: 0 20px; /* Add some padding to prevent edge touching */
+      }
+      
       .arrow-link {
         font-size: 1.1rem;
         font-weight: 700;
         @include transition;
+        
+        @include mobile {
+          font-size: 1rem; /* Slightly smaller text on mobile */
+          word-break: break-word; /* Allow text to break if needed */
+          display: inline-block;
+          line-height: 1.4; /* Better line spacing if text wraps */
+        }
+        
         &:hover {
           color: $yellow;
         }
+        
         // Custom arrow for "View More Projects" link
         &:after {
           content: '';
@@ -54,6 +68,26 @@
         }
         &:hover:after {
           transform: translateX(8px);
+        }
+        
+        // Text switching logic - outside of mobile mixin
+        .short-text {
+          display: none; /* Hide short text on larger screens */
+        }
+        
+        .full-text {
+          display: inline; /* Show full text on larger screens */
+        }
+        
+        // On mobile screens, show short text
+        @media screen and (max-width: 480px) {
+          .full-text {
+            display: none !important; /* Hide full text on mobile */
+          }
+          
+          .short-text {
+            display: inline !important; /* Show short text on mobile */
+          }
         }
       }
     }
