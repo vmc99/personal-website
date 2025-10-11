@@ -7,6 +7,138 @@ permalink: /privacy-policy/
 <html class="night">
 <head>
   {% include head.html %}
+  <style>
+    /* Critical CSS to prevent FOUC */
+    html.night, body.night {
+      background-color: rgb(23, 28, 30) !important;
+      color: #afafbf !important;
+    }
+    
+    .privacy-policy {
+      padding: 50px 80px 80px;
+      max-width: 800px;
+      margin: 0 auto;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    
+    .privacy-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    
+    .main-logo {
+      position: absolute;
+      top: 28px;
+      left: 50px;
+      z-index: 4;
+      transition: opacity 0.3s ease;
+    }
+    
+    .main-logo a {
+      display: inline-block;
+      transition: transform 0.2s ease;
+    }
+    
+    .main-logo a:hover {
+      transform: scale(1.05);
+    }
+    
+    .main-logo img {
+      height: 34px;
+      width: auto;
+    }
+    
+    .privacy-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      color: #afafbf;
+    }
+    
+    .last-updated {
+      opacity: 0.7;
+      font-style: italic;
+      font-size: 0.9rem;
+      color: #afafbf;
+    }
+    
+    .privacy-section {
+      margin-bottom: 40px;
+    }
+    
+    .privacy-section h2 {
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+      border-bottom: 0.1px solid rgba(175, 175, 191, 0.3);
+      padding-bottom: 8px;
+      color: #afafbf;
+    }
+    
+    .privacy-section p, 
+    .privacy-section li {
+      margin-bottom: 10px;
+      line-height: 1.6;
+      color: #afafbf;
+    }
+    
+    .privacy-section ul {
+      margin-left: 20px;
+      margin-bottom: 15px;
+    }
+    
+    .privacy-section a {
+      color: #afafbf;
+      text-decoration: none;
+      border-bottom: 0.1px solid #afafbf;
+      transition: all 0.3s ease;
+    }
+    
+    .privacy-section a:hover {
+      opacity: 0.7;
+      border-bottom-color: transparent;
+    }
+    
+    .privacy-footer {
+      text-align: center;
+      margin-top: 50px;
+      padding-top: 30px;
+    }
+    
+    .back-home {
+      color: #afafbf;
+      text-decoration: none;
+      font-weight: 500;
+      transition: opacity 0.3s ease;
+    }
+    
+    .back-home:hover {
+      opacity: 0.7;
+    }
+    
+    .privacy-copyright {
+      text-align: center;
+      margin-top: 30px;
+      padding-top: 20px;
+      opacity: 0.7;
+      font-size: 0.875rem;
+      color: #afafbf;
+    }
+    
+    body, html {
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+    
+    @media (max-width: 768px) {
+      .privacy-policy {
+        padding: 50px 30px 60px;
+      }
+      
+      .privacy-header h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
 </head>
 <body class="night">
 
@@ -77,143 +209,3 @@ permalink: /privacy-policy/
 {% include scripts.html %}
 </body>
 </html>
-
-<style>
-/* Clean dark theme exactly like your reference image */
-html.night, body.night {
-  background-color: rgb(23, 28, 30) !important;
-  color: #afafbf !important;
-}
-
-.main-logo {
-  position: absolute;
-  top: 28px;
-  left: 50px;
-  z-index: 4;
-  transition: opacity 0.3s ease;
-}
-
-.main-logo a {
-  display: inline-block;
-  transition: transform 0.2s ease;
-}
-
-.main-logo a:hover {
-  transform: scale(1.05);
-}
-
-.main-logo img {
-  height: 34px;
-  width: auto;
-}
-
-.privacy-policy {
-  padding: 50px 80px 80px;
-  max-width: 800px;
-  margin: 0 auto;
-  line-height: 1.6;
-  min-height: 100vh;
-}
-
-.privacy-header {
-  text-align: center;
-  margin-bottom: 50px;
-}
-
-.privacy-header h1 {
-  font-size: 2.5rem;
-  margin-bottom: 10px;
-  color: #afafbf;
-}
-
-.last-updated {
-  opacity: 0.7;
-  font-style: italic;
-  font-size: 0.9rem;
-  color: #afafbf;
-}
-
-.privacy-section {
-  margin-bottom: 40px;
-}
-
-.privacy-section h2 {
-  font-size: 1.3rem;
-  margin-bottom: 15px;
-  border-bottom: 0.1px solid rgba(175, 175, 191, 0.3);
-  padding-bottom: 8px;
-  color: #afafbf;
-}
-
-.privacy-section p, 
-.privacy-section li {
-  margin-bottom: 10px;
-  line-height: 1.6;
-  color: #afafbf;
-}
-
-.privacy-section ul {
-  margin-left: 20px;
-  margin-bottom: 15px;
-}
-
-.privacy-section a {
-  color: #afafbf;
-  text-decoration: none;
-  border-bottom: 0.1px solid #afafbf;
-  transition: all 0.3s ease;
-}
-
-.privacy-section a:hover {
-  opacity: 0.7;
-  border-bottom-color: transparent;
-}
-
-.privacy-footer {
-  text-align: center;
-  margin-top: 50px;
-  padding-top: 30px;
-  /* border-top: 0.2px solid rgba(175, 175, 191, 0.3); */
-}
-
-.back-home {
-  color: #afafbf;
-  text-decoration: none;
-  font-weight: 500;
-  transition: opacity 0.3s ease;
-}
-
-.back-home:hover {
-  opacity: 0.7;
-}
-
-.privacy-copyright {
-  text-align: center;
-  margin-top: 30px;
-  padding-top: 20px;
-  /* border-top: 0.2px solid rgba(175, 175, 191, 0.3); */
-  opacity: 0.7;
-  font-size: 0.875rem;
-  color: #afafbf;
-}
-
-/* Ensure body and html allow scrolling */
-body, html {
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-
-#site {
-  overflow: visible;
-}
-
-@media (max-width: 768px) {
-  .privacy-policy {
-    padding: 50px 30px 60px;
-  }
-  
-  .privacy-header h1 {
-    font-size: 2rem;
-  }
-}
-</style>
