@@ -65,3 +65,134 @@
 <link href="https://fonts.googleapis.com/css?family=Inconsolata:400,700" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ site.baseurl }}/css/main.css" hreflang="en-us">
+
+<!-- Google Analytics -->
+{% include analytics.html %}
+
+<!-- JSON-LD Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Person",
+  "name": "{{ site.name }}",
+  "givenName": "Vamsi",
+  "familyName": "Mukkamala",
+  "jobTitle": "Software Engineer",
+  "description": "{{ site.description }}",
+  "url": "{{ site.url }}",
+  "email": "{{ site.email }}",
+  "image": "{{ site.url }}{{ site.logo }}",
+  "sameAs": [
+    "{{ site.github }}",
+    "https://www.linkedin.com/in/vmc99",
+    "https://x.com/vamsi_mukkamala"
+  ],
+  "knowsAbout": [
+    "Python",
+    "C/C++",
+    "Java",
+    "SQL",
+    "Go",
+    "Swift",
+    "LangChain",
+    "LangGraph",
+    "AI/ML",
+    "Software Engineering",
+    "Web Development",
+    "Legacy Code Remediation",
+    "Agentic Workflows"
+  ],
+  "hasOccupation": {
+    "@type": "Occupation",
+    "name": "Software Engineer",
+    "description": "Focused on designing, building & automating things"
+  },
+  "worksFor": {
+    "@type": "Organization",
+    "name": "IBM Research",
+    "url": "https://research.ibm.com"
+  },
+  "alumniOf": [
+    {
+      "@type": "CollegeOrUniversity",
+      "name": "University College London",
+      "alternateName": "UCL",
+      "url": "https://www.ucl.ac.uk/",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "London",
+        "addressCountry": "United Kingdom"
+      }
+    },
+    {
+      "@type": "CollegeOrUniversity", 
+      "name": "GITAM (Deemed to be University)",
+      "url": "https://www.gitam.edu/",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Visakhapatnam",
+        "addressCountry": "India"
+      }
+    }
+  ],
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "London",
+    "addressCountry": "United Kingdom"
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "WebSite",
+  "name": "{{ site.title }} - Portfolio",
+  "description": "{{ site.description }}",
+  "url": "{{ site.url }}",
+  "author": {
+    "@type": "Person",
+    "name": "{{ site.name }}"
+  },
+  "inLanguage": "en-US",
+  "copyrightHolder": {
+    "@type": "Person",
+    "name": "{{ site.name }}"
+  },
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "{{ site.url }}/?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "ProfilePage",
+  "mainEntity": {
+    "@type": "Person",
+    "name": "{{ site.name }}",
+    "jobTitle": "Software Engineer",
+    "description": "{{ site.description }}",
+    "url": "{{ site.url }}",
+    "sameAs": [
+      "{{ site.github }}",
+      "https://www.linkedin.com/in/vmc99",
+      "https://x.com/vamsi_mukkamala"
+    ]
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "{{ site.url }}"
+      }
+    ]
+  }
+}
+</script>
