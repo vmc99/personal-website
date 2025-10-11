@@ -39,32 +39,33 @@
 
 <!-- Web App Manifest -->
 <link rel="manifest" href="{{ site.baseurl }}/site.webmanifest">
-<meta property="og:title" content="{{site.title}}" />
-<meta property="og:description" content="{{site.description}}" />
+<meta property="og:title" content="{{ site.title }} – Software Engineer" />
+<meta property="og:description" content="{{ site.description }}" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="{{site.url}}" />
-<meta property="og:site_name" content="{{site.name}}" />
-<meta property="og:image" content="{{site.cover}}" />
-<meta property="og:image:width" content="1280" />
-<meta property="og:image:height" content="800" />
-<meta property="og:image:type" content="image/png" />
+<meta property="og:url" content="{{ site.url }}/" />
+<meta property="og:site_name" content="{{ site.name }}" />
+<meta property="og:image" content="{{ site.url }}{{ site.logo }}" />
+<meta property="og:image:width" content="512" />
+<meta property="og:image:height" content="512" />
+<meta property="og:image:type" content="image/svg+xml" />
 <meta property="og:locale" content="en_US">
-<meta name="description" content="{{site.description}}">
-<meta name="keywords" content="design, development, web, mvamsi, vamsi, mukkamala, javascript, ucl">
+<meta name="description" content="{{ site.description }}">
+<meta name="keywords" content="software engineer, developer, python, java, ai, ml, langchain, vamsi mukkamala, ucl, portfolio">
 <meta name="google-site-verification" content="DCl7VAf9tcz6eD9gb67NfkNnJ1PKRNcg8qQiwpbx9Lk" />
-<meta itemprop="name" content="{{site.title}}">
-<meta itemprop="description" content="{{site.description}}">
-<meta itemprop="image" content="{{site.cover}}">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:url" content="{{site.url}}">
+<meta itemprop="name" content="{{ site.title }}">
+<meta itemprop="description" content="{{ site.description }}">
+<meta itemprop="image" content="{{ site.url }}{{ site.logo }}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="{{ site.url }}/">
 <meta name="twitter:site" content="@vamsi_mukkamala">
 <meta name="twitter:creator" content="@vamsi_mukkamala">
-<meta name="twitter:title" content="{{site.title}}">
-<meta name="twitter:description" content="{{site.description}}">
-<meta name="twitter:image:src" content="{{site.cover}}">
+<meta name="twitter:title" content="{{ site.title }} – Software Engineer">
+<meta name="twitter:description" content="{{ site.description }}">
+<meta name="twitter:image" content="{{ site.url }}{{ site.logo }}">
 <link href="https://fonts.googleapis.com/css?family=Inconsolata:400,700" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ site.baseurl }}/css/main.css" hreflang="en-us">
+<link rel="canonical" href="https://mvamsi.com/">
 
 <!-- Google Analytics -->
 {% include analytics.html %}
@@ -74,6 +75,7 @@
 {
   "@context": "https://schema.org/",
   "@type": "Person",
+  "@id": "#me",
   "name": "{{ site.name }}",
   "givenName": "Vamsi",
   "familyName": "Mukkamala",
@@ -150,15 +152,9 @@
   "name": "{{ site.title }} - Portfolio",
   "description": "{{ site.description }}",
   "url": "{{ site.url }}",
-  "author": {
-    "@type": "Person",
-    "name": "{{ site.name }}"
-  },
+  "author": { "@id": "#me" },
   "inLanguage": "en-US",
-  "copyrightHolder": {
-    "@type": "Person",
-    "name": "{{ site.name }}"
-  },
+  "copyrightHolder": { "@id": "#me" },
   "potentialAction": {
     "@type": "SearchAction",
     "target": "{{ site.url }}/?q={search_term_string}",
@@ -171,18 +167,7 @@
 {
   "@context": "https://schema.org/",
   "@type": "ProfilePage",
-  "mainEntity": {
-    "@type": "Person",
-    "name": "{{ site.name }}",
-    "jobTitle": "Software Engineer",
-    "description": "{{ site.description }}",
-    "url": "{{ site.url }}",
-    "sameAs": [
-      "{{ site.github }}",
-      "https://www.linkedin.com/in/vmc99",
-      "https://x.com/vamsi_mukkamala"
-    ]
-  },
+  "mainEntity": { "@id": "#me" },
   "breadcrumb": {
     "@type": "BreadcrumbList",
     "itemListElement": [

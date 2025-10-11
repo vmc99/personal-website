@@ -2,7 +2,7 @@
 name: Vamsi Mukkamala
 title: Vamsi Mukkamala
 description: A software engineer focused on designing, building & automating things
-url: 'http://localhost:4000' # For local development
+url: 'http://localhost:3000' # For local development
 baseurl: ''
 email: vmuk99@gmail.com
 logo: /img/emojis/tech_vamsi.png

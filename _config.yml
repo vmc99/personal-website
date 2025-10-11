@@ -5,7 +5,7 @@ description: A software engineer focused on designing, building & automating thi
 url: 'https://mvamsi.com' # Custom domain URL
 baseurl: '' # No baseurl needed for custom domain
 email: vmuk99@gmail.com
-logo: /img/emojis/tech_vamsi.png
+logo: /img/logo/logo.svg
 resume: /static/resume.pdf
 github: https://github.com/vmc99
 social:
