@@ -205,7 +205,7 @@ Moving to Cloudflare or Vercel later needs no code change. It would only be wort
 - Safari can clear script-written storage after seven days without a visit, so there an explicit choice may revert to System. Accepted.
 - Listen for the `storage` event so an open tab follows a change made in another tab.
 - Point Expressive Code's theme selector at `data-theme` so code follows the switch.
-- Switching cross-fades the whole page over 0.45s with a view transition, instead of per-element colour transitions, so code blocks and images fade with everything else. Instant under reduced motion and in browsers without view transitions. Built 14 November 2026.
+- Switching fades colours over 0.45s, as in the preview: backgrounds, text, borders and the theme button's background fade, while the label and icon swap at once. The fade is applied to every element only for the length of the switch, so code blocks fade too. Instant under reduced motion. Changed 15 November 2026 from a view-transition cross-fade, which captured the page as an image: it needed the switch lifted out to keep its label instant, and misbehaved when the page was zoomed.
 
 ## Inputs from Vamsi
 

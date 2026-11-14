@@ -79,22 +79,16 @@
   @view-transition { navigation: none; }
 }
 
-/* The theme switch's cross-fade: one even fade of the whole page, header included. */
-html.theming::view-transition-group(*),
-html.theming::view-transition-old(*),
-html.theming::view-transition-new(*) {
-  animation-duration: .45s;
-  animation-timing-function: ease-out;
-}
-/* During a theme change, nothing but the switch is lifted into its own layer: the header,
-   project and post titles all fade as part of the page. Otherwise named elements are drawn
-   above everything else mid-fade, over the sticky header when scrolled. */
-html.theming :not([data-theme-btn]) { view-transition-name: none !important; }
-/* The switch itself answers at once: its new label and icon appear without fading. */
-html.theming::view-transition-group(theme-btn),
-html.theming::view-transition-old(theme-btn),
-html.theming::view-transition-new(theme-btn) {
-  animation: none;
+/* Theme change, as in the preview: colours fade over 0.45s while text and icons swap at once.
+   `theming` is on <html> only for the length of the fade, so these transitions never slow down
+   anything else (hover, the header move, the owl). */
+@media (prefers-reduced-motion: no-preference) {
+  html.theming *,
+  html.theming *::before,
+  html.theming *::after {
+    transition: background-color .45s ease-out, color .45s ease-out, border-color .45s ease-out,
+      fill .45s ease-out, stroke .45s ease-out, box-shadow .45s ease-out, text-decoration-color .45s ease-out !important;
+  }
 }
 
 /* Intro (Intro.astro): until its script takes over, cover the page so it does not show and then
