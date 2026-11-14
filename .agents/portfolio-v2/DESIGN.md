@@ -44,7 +44,7 @@ Unchanged: Astro, Light / Dark / System, GSAP as the animation engine, the portf
 
 ### Colour tokens
 
-Implement each token once with `light-dark()` and let `color-scheme` choose. No duplicated dark block.
+Implemented (15 November 2026) as registered colour properties with plain light and dark values, so a theme change fades the tokens themselves. `light-dark()` was the first choice but Chrome does not animate it inside a registered property. See Themes.
 
 | Token | Light | Dark | Use |
 | --- | --- | --- | --- |
@@ -205,7 +205,7 @@ Moving to Cloudflare or Vercel later needs no code change. It would only be wort
 - Safari can clear script-written storage after seven days without a visit, so there an explicit choice may revert to System. Accepted.
 - Listen for the `storage` event so an open tab follows a change made in another tab.
 - Point Expressive Code's theme selector at `data-theme` so code follows the switch.
-- Switching fades colours over 0.45s, as in the preview: backgrounds, text, borders and the theme button's background fade, while the label and icon swap at once. The fade is applied to every element only for the length of the switch, so code blocks fade too. Instant under reduced motion. Changed 15 November 2026 from a view-transition cross-fade, which captured the page as an image: it needed the switch lifted out to keep its label instant, and misbehaved when the page was zoomed.
+- Switching fades colours over 0.45s, as in the preview: backgrounds, text, borders and the theme button's background fade; the label and icon swap at once. The colour tokens are faded on `<html>` and on the inverted footer only, and every element reads them, so all text changes in step in every browser (fading colour on each element made nested and bold text trail behind in Safari). Syntax-highlight colours in code blocks switch at once; the code background fades. Instant under reduced motion. Changed 15 November 2026 from a view-transition cross-fade, which misbehaved when the page was zoomed.
 
 ## Inputs from Vamsi
 

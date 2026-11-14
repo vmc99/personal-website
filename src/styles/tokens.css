@@ -1,28 +1,139 @@
-/* Logbook tokens. Declared once with light-dark(); color-scheme picks the side.
-   System is the default; data-theme on <html> pins Light or Dark.
+/* Logbook tokens. System is the default; data-theme on <html> pins Light or Dark.
    Generic tokens (type, space, radius) are kept apart from the site's identity (colour, mark)
-   so they can be lifted into a shared package later. See DESIGN.md. */
+   so they can be lifted into a shared package later. See DESIGN.md.
+
+   Colour tokens are registered colour properties with plain light and dark values, so a theme
+   change can fade the tokens themselves on <html> (and on the inverted footer) while every
+   element simply reads them. Nothing fades on its own, so nothing lags behind, in any browser.
+   (light-dark() would be shorter, but Chrome does not animate it inside a registered property,
+   and fading colour on every element makes nested text trail behind in Safari.) */
+
+@property --ground { syntax: '<color>'; inherits: true; initial-value: #F2F1EC; }
+@property --raised { syntax: '<color>'; inherits: true; initial-value: #E8E6DF; }
+@property --sunken { syntax: '<color>'; inherits: true; initial-value: #DEDCD3; }
+@property --ink { syntax: '<color>'; inherits: true; initial-value: #191B18; }
+@property --muted { syntax: '<color>'; inherits: true; initial-value: #575A54; }
+@property --line { syntax: '<color>'; inherits: true; initial-value: #CFCDC3; }
+@property --accent { syntax: '<color>'; inherits: true; initial-value: #0E6A4B; }
+@property --accent-hover { syntax: '<color>'; inherits: true; initial-value: #0A5139; }
+@property --on-accent { syntax: '<color>'; inherits: true; initial-value: #F2F1EC; }
+@property --field-green { syntax: '<color>'; inherits: true; initial-value: #CBE3D2; }
+@property --field-blue { syntax: '<color>'; inherits: true; initial-value: #CEDCEC; }
+@property --field-amber { syntax: '<color>'; inherits: true; initial-value: #EFDDA8; }
+@property --field-plum { syntax: '<color>'; inherits: true; initial-value: #E3D2E6; }
 
 @layer tokens {
-  :root {
-    color-scheme: light dark;
+  /* Light (left) and dark (right) values:
+     --ground       #F2F1EC  #141613
+     --raised       #E8E6DF  #1D201C
+     --sunken       #DEDCD3  #0F110E
+     --ink          #191B18  #E9E7E0
+     --muted        #575A54  #A4A79F
+     --line         #CFCDC3  #33372F
+     --accent       #0E6A4B  #7FDCAB
+     --accent-hover #0A5139  #A5EBC5
+     --on-accent    #F2F1EC  #0F1A14
+     --field-green  #CBE3D2  #1D3A2C
+     --field-blue   #CEDCEC  #1D3046
+     --field-amber  #EFDDA8  #43371A
+     --field-plum   #E3D2E6  #39283E
+  */
 
-    /* Identity: colour */
-    --ground:       light-dark(#F2F1EC, #141613);
-    --raised:       light-dark(#E8E6DF, #1D201C);
-    --sunken:       light-dark(#DEDCD3, #0F110E);
-    --ink:          light-dark(#191B18, #E9E7E0);
-    --muted:        light-dark(#575A54, #A4A79F);
-    --line:         light-dark(#CFCDC3, #33372F);
-    --accent:       light-dark(#0E6A4B, #7FDCAB);
-    --accent-hover: light-dark(#0A5139, #A5EBC5);
-    --on-accent:    light-dark(#F2F1EC, #0F1A14);
-    --field-green:  light-dark(#CBE3D2, #1D3A2C);
-    --field-blue:   light-dark(#CEDCEC, #1D3046);
-    --field-amber:  light-dark(#EFDDA8, #43371A);
-    --field-plum:   light-dark(#E3D2E6, #39283E);
+  /* Light: the page in light, and the inverted footer on a dark page. */
+  :root,
+  :root[data-theme='dark'] .flip {
+    --ground:        #F2F1EC;
+    --raised:        #E8E6DF;
+    --sunken:        #DEDCD3;
+    --ink:           #191B18;
+    --muted:         #575A54;
+    --line:          #CFCDC3;
+    --accent:        #0E6A4B;
+    --accent-hover:  #0A5139;
+    --on-accent:     #F2F1EC;
+    --field-green:   #CBE3D2;
+    --field-blue:    #CEDCEC;
+    --field-amber:   #EFDDA8;
+    --field-plum:    #E3D2E6;
+  }
+  /* Dark: the page in dark, and the inverted footer on a light page. */
+  :root[data-theme='dark'],
+  .flip {
+    --ground:        #141613;
+    --raised:        #1D201C;
+    --sunken:        #0F110E;
+    --ink:           #E9E7E0;
+    --muted:         #A4A79F;
+    --line:          #33372F;
+    --accent:        #7FDCAB;
+    --accent-hover:  #A5EBC5;
+    --on-accent:     #0F1A14;
+    --field-green:   #1D3A2C;
+    --field-blue:    #1D3046;
+    --field-amber:   #43371A;
+    --field-plum:    #39283E;
+  }
+  /* System dark, unless Light is pinned. */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+      --ground:        #141613;
+      --raised:        #1D201C;
+      --sunken:        #0F110E;
+      --ink:           #E9E7E0;
+      --muted:         #A4A79F;
+      --line:          #33372F;
+      --accent:        #7FDCAB;
+      --accent-hover:  #A5EBC5;
+      --on-accent:     #0F1A14;
+      --field-green:   #1D3A2C;
+      --field-blue:    #1D3046;
+      --field-amber:   #43371A;
+      --field-plum:    #39283E;
+    }
+    :root:not([data-theme='light']) .flip {
+      --ground:        #F2F1EC;
+      --raised:        #E8E6DF;
+      --sunken:        #DEDCD3;
+      --ink:           #191B18;
+      --muted:         #575A54;
+      --line:          #CFCDC3;
+      --accent:        #0E6A4B;
+      --accent-hover:  #0A5139;
+      --on-accent:     #F2F1EC;
+      --field-green:   #CBE3D2;
+      --field-blue:    #CEDCEC;
+      --field-amber:   #EFDDA8;
+      --field-plum:    #E3D2E6;
+    }
+  }
+
+  /* Tonal greens, derived where the tokens are set so the footer gets its own. */
+  :root, .flip {
     --t1: color-mix(in oklab, var(--accent) 38%, var(--raised));
     --t2: color-mix(in oklab, var(--accent) 68%, var(--raised));
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :root, .flip {
+      transition:
+      --ground .45s ease-out,
+      --raised .45s ease-out,
+      --sunken .45s ease-out,
+      --ink .45s ease-out,
+      --muted .45s ease-out,
+      --line .45s ease-out,
+      --accent .45s ease-out,
+      --accent-hover .45s ease-out,
+      --on-accent .45s ease-out,
+      --field-green .45s ease-out,
+      --field-blue .45s ease-out,
+      --field-amber .45s ease-out,
+      --field-plum .45s ease-out;
+    }
+  }
+
+  :root {
+    color-scheme: light dark; /* native controls and scrollbars */
 
     /* Generic: type */
     --font-serif: 'Newsreader Variable', 'Iowan Old Style', Georgia, serif;
@@ -56,6 +167,6 @@
   .flip { color-scheme: dark; }
   :root[data-theme='dark'] .flip { color-scheme: light; }
   @media (prefers-color-scheme: dark) {
-    :root:not([data-theme]) .flip { color-scheme: light; }
+    :root:not([data-theme='light']) .flip { color-scheme: light; }
   }
 }

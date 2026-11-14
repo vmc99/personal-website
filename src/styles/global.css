@@ -79,18 +79,6 @@
   @view-transition { navigation: none; }
 }
 
-/* Theme change, as in the preview: colours fade over 0.45s while text and icons swap at once.
-   `theming` is on <html> only for the length of the fade, so these transitions never slow down
-   anything else (hover, the header move, the owl). */
-@media (prefers-reduced-motion: no-preference) {
-  html.theming *,
-  html.theming *::before,
-  html.theming *::after {
-    transition: background-color .45s ease-out, color .45s ease-out, border-color .45s ease-out,
-      fill .45s ease-out, stroke .45s ease-out, box-shadow .45s ease-out, text-decoration-color .45s ease-out !important;
-  }
-}
-
 /* Intro (Intro.astro): until its script takes over, cover the page so it does not show and then
    vanish under the overlay. If the script never runs, the cover fades out by itself. */
 html.intro-pending:not(.intro-run) body::after {

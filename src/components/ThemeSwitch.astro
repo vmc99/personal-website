@@ -40,13 +40,9 @@
     } catch {
       /* Storage blocked: the choice still applies to this page view. */
     }
-    // Colours fade for 0.45s (see `html.theming` in global.css); the label swaps at once.
-    root.classList.add('theming');
+    // The colour tokens fade over 0.45s (tokens.css); the label swaps at once.
     show(t);
-    clearTimeout(fade);
-    fade = window.setTimeout(() => root.classList.remove('theming'), 500);
   }
-  let fade = 0;
 
   show(read());
   document.addEventListener('click', (e) => {

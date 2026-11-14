@@ -215,9 +215,16 @@
   .fg :global(i) { display: block; border-radius: var(--rad, 4px); background: var(--raised); }
 
   /* The owl's cells. In dark the pupils go dark and the whites bright, so the eyes read at a glance. */
-  .fg {
-    --owl-white: light-dark(color-mix(in oklab, var(--t1) 50%, #FFFFFF), color-mix(in oklab, var(--accent) 30%, var(--ink)));
-    --owl-pupil: light-dark(var(--accent), var(--ground));
+  /* Registered and faded like the colour tokens in tokens.css, so the eyes change with the page. */
+  @property --owl-white { syntax: '<color>'; inherits: true; initial-value: white; }
+  @property --owl-pupil { syntax: '<color>'; inherits: true; initial-value: black; }
+  .fg { --owl-white: color-mix(in oklab, var(--t1) 50%, #FFFFFF); --owl-pupil: var(--accent); }
+  :global(:root[data-theme='dark']) .fg { --owl-white: color-mix(in oklab, var(--accent) 30%, var(--ink)); --owl-pupil: var(--ground); }
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .fg { --owl-white: color-mix(in oklab, var(--accent) 30%, var(--ink)); --owl-pupil: var(--ground); }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .fg { transition: --owl-white .45s ease-out, --owl-pupil .45s ease-out; }
   }
   .fg :global(i.hot) { background: color-mix(in oklab, var(--t1) 70%, var(--raised)); } /* first, so the owl's cells win */
   .fg :global(i.b), .fg :global(i.z1) { background: var(--t1); }  /* body; a fading Z */
