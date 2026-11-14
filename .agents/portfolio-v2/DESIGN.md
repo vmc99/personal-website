@@ -160,7 +160,7 @@ Versions are the latest on the npm registry on 13 November 2026. Pin exact versi
 | Code blocks | Expressive Code (`astro-expressive-code`): copy button, file-name and terminal frames, line marking, paired light and dark themes. |
 | Search | Pagefind, run after the build, indexing blog articles only. |
 | Feeds and maps | `@astrojs/rss` for the blog feed at `/blog/rss.xml`; `@astrojs/sitemap` for one sitemap covering the whole site. |
-| Social images | Generated at build time from the cell grid and the post title. |
+| Social images | Generated at build time from the cell grid and the post title. Built 15 November 2026: `/og/<slug>.png` per post, plus `home` and `blog`, rendered with Satori 0.63 and sharp from the static Newsreader and Hanken Grotesk files (build-time dev dependencies). `npm audit` flags a moderate issue in Satori's `fflate` dependency (malformed ZIP64 archives); it never sees untrusted input here and nothing of it ships to the site. |
 | Animation | GSAP 3.15 on the portfolio. Lenis 1.3 only if it survives the trial. |
 | Analytics | No cookies anywhere on the site, so no consent banner. The current GA4 tag sets cookies and is removed. In its place: Google Search Console for search traffic (no script on the page), plus at most one cookieless counter, chosen at release. Rewrite the Cookies and Analytics sections of the privacy policy to match. |
 

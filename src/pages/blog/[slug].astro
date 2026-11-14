@@ -44,7 +44,7 @@ const jsonLd = {
   isPartOf: { '@type': 'Blog', name: site.blog.name, url: `${site.url}/blog/` },
 };
 ---
-<Base title={`${title} · ${site.blog.name}`} description={description} half="blog" type="article">
+<Base title={`${title} · ${site.blog.name}`} description={description} half="blog" type="article" image={`/og/${post.id}.png`}>
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   <article class="article" data-pagefind-body>
     <header class="article-head">
