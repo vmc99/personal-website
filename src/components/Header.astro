@@ -121,7 +121,9 @@ const name = isBlog ? site.blog.name : site.author;
   :global(:root:not(.scrolled) body.blink) .brand :global(.mk-v :is(.o1, .o5) rect) { transform: scaleY(.15); }
 
   @media (prefers-reduced-motion: no-preference) {
-    .site-head { transition: box-shadow var(--hd) var(--he), background-color .45s ease-out; }
+    /* No colour transition here: the theme cross-fade handles colour, and a second fade
+       would leave the header a step behind the page. */
+    .site-head { transition: box-shadow var(--hd) var(--he); }
     .w1 { transition: clip-path var(--hd) var(--he); }
     .brand :global(.mk-v g) { transition: transform var(--hd) var(--he); }
     .brand :global(.mk-v rect) { transition: transform .09s ease-in-out; }

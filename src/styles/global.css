@@ -85,3 +85,9 @@ html.theming::view-transition-new(*) {
   animation-duration: .45s;
   animation-timing-function: ease-out;
 }
+/* The switch itself answers at once: its new label and icon appear without fading. */
+html.theming::view-transition-group(theme-btn),
+html.theming::view-transition-old(theme-btn),
+html.theming::view-transition-new(theme-btn) {
+  animation: none;
+}
