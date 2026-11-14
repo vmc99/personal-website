@@ -1,6 +1,9 @@
 ---
-// Sticky header shared by both halves. The condense-on-scroll move, the owl and the blink
-// come in the foundation and interaction phases; this is the static shell.
+// Sticky header shared by both halves. One triggered move when the page leaves the top,
+// timed like the Anthropic wordmark: 0.64s on one curve, not tied to scroll position.
+// Only clip-path, transform and opacity animate, so the header keeps one height.
+// Both halves: the name is wiped. Portfolio: the V closes up into the owl's face, whose eyes
+// then follow the pointer and blink. Blog: the prompt mark stays. See DESIGN.md.
 import Mark from './Mark.astro';
 import ThemeSwitch from './ThemeSwitch.astro';
 import { portfolioNav, blogNav, site } from '../site';
@@ -12,12 +15,13 @@ const { half } = Astro.props;
 const isBlog = half === 'blog';
 const nav = isBlog ? blogNav : portfolioNav;
 const path = Astro.url.pathname;
+const name = isBlog ? site.blog.name : site.author;
 ---
 <header class="site-head">
   <div class="wrap head-in">
-    <a class="brand" href={isBlog ? '/blog/' : '/'} aria-label={isBlog ? `${site.blog.name}, blog home` : `${site.author}, home`}>
-      <Mark kind={isBlog ? 'prompt' : 'v'} />
-      <span class="brand-name" aria-hidden="true">{isBlog ? site.blog.name : site.author}</span>
+    <a class="brand" data-kind={isBlog ? 'prompt' : 'v'} href={isBlog ? '/blog/' : '/'} aria-label={isBlog ? `${site.blog.name}, blog home` : `${name}, home`}>
+      <span class="brand-mark"><Mark kind={isBlog ? 'prompt' : 'v'} /></span>
+      <span class="brand-name" aria-hidden="true"><span class="w1">{name}</span></span>
     </a>
     <nav class="site-nav" aria-label="Primary">
       {nav.map((item) => (
@@ -30,17 +34,105 @@ const path = Astro.url.pathname;
   </div>
 </header>
 
+<script>
+  import { startPresence, onLook, reduceMotion } from '../scripts/presence';
+
+  const root = document.documentElement;
+  const brand = document.querySelector<HTMLElement>('.brand')!;
+  const name = brand.querySelector<HTMLElement>('.w1')!;
+  const mark = brand.querySelector<SVGElement>('svg')!;
+  let collapsed = false;
+
+  // Condense just below the top; open again only at the very top.
+  function update() {
+    const want = collapsed ? scrollY > 6 : scrollY > 16;
+    if (want !== collapsed) {
+      collapsed = want;
+      root.classList.toggle('scrolled', want);
+    }
+  }
+
+  // The wipe needs the name's width. Measure without animating, so a page opened
+  // part-way down (reload, back button) starts condensed instead of animating in.
+  function measure() {
+    brand.classList.add('no-anim');
+    brand.style.setProperty('--d', `${name.getBoundingClientRect().width.toFixed(2)}px`);
+    update();
+    void brand.offsetWidth;
+    brand.classList.remove('no-anim');
+  }
+
+  addEventListener('scroll', update, { passive: true });
+  let rz = 0;
+  addEventListener('resize', () => {
+    clearTimeout(rz);
+    rz = window.setTimeout(measure, 120);
+  });
+  measure();
+  document.fonts.ready.then(measure);
+
+  // Once condensed, the owl's eyes look towards the pointer, about a cell's width either way.
+  if (brand.dataset.kind === 'v' && !reduceMotion) {
+    onLook((x, y) => {
+      if (!collapsed) return;
+      const r = mark.getBoundingClientRect();
+      const dx = x - (r.left + r.width / 2);
+      const dy = y - (r.top + r.height / 2);
+      const d = Math.max(Math.hypot(dx, dy), 40);
+      brand.style.setProperty('--ex', `${((dx / d) * 3).toFixed(2)}px`);
+      brand.style.setProperty('--ey', `${((dy / d) * 2.2).toFixed(2)}px`);
+    });
+  }
+  startPresence();
+</script>
+
 <style>
   .site-head {
     position: sticky; top: 0; z-index: 20; background: var(--ground);
+    box-shadow: 0 1px 0 transparent;
     view-transition-name: site-head;
   }
+  :global(.scrolled) .site-head { box-shadow: 0 1px 0 var(--line); }
   .head-in { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding-block: 16px; }
+
   .brand {
     display: inline-flex; align-items: center; gap: 12px; color: var(--ink); text-decoration: none;
     white-space: nowrap; font: 500 1.3125rem/1.4 var(--font-serif); letter-spacing: -0.01em;
   }
   .brand:hover { color: var(--ink); }
+  .brand-mark { display: inline-flex; align-items: center; }
+  .brand-name { display: inline-flex; white-space: pre; }
+
+  /* The wipe. */
+  .w1 { clip-path: inset(-6px 0% -6px -2px); }
+  /* Past the full width, so a glyph overhanging the left edge is wiped too. */
+  :global(.scrolled) .w1 { clip-path: inset(-6px calc(var(--d, 100%) + 4px) -6px -2px); }
+
+  /* Portfolio: the V closes up into the owl's face. */
+  :global(.scrolled) .brand :global(.mk-v .o1) { transform: translate(1px, 1px) scale(.7); }      /* ear tufts drop and shrink */
+  :global(.scrolled) .brand :global(.mk-v .o5) { transform: translate(-1px, 1px) scale(.7); }
+  :global(.scrolled) .brand :global(.mk-v .o2) { transform: translate(1.5px, -3px); }             /* eyes rise */
+  :global(.scrolled) .brand :global(.mk-v .o4) { transform: translate(-1.5px, -3px); }
+  :global(.scrolled) .brand :global(.mk-v .o3) { transform: translate(0, -5px) scale(.55, .45); } /* beak tucks up under them */
+  :global(.scrolled) .brand :global(.mk-v :is(.o2, .o4) rect) { transform: translate(var(--ex, 0px), var(--ey, 0px)); }
+  :global(.scrolled body.blink) .brand :global(.mk-v :is(.o2, .o4) rect) { transform: translate(var(--ex, 0px), var(--ey, 0px)) scaleY(.15); }
+  :global(:root:not(.scrolled) body.blink) .brand :global(.mk-v :is(.o1, .o5) rect) { transform: scaleY(.15); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .site-head { transition: box-shadow var(--hd) var(--he), background-color .45s ease-out; }
+    .w1 { transition: clip-path var(--hd) var(--he); }
+    .brand :global(.mk-v g) { transition: transform var(--hd) var(--he); }
+    .brand :global(.mk-v rect) { transition: transform .09s ease-in-out; }
+    .brand :global(.mk-v :is(.o2, .o4) rect) { transition: transform .14s ease-out; }
+    .brand.no-anim, .brand.no-anim :global(*) { transition: none !important; }
+
+    /* Blog: the prompt turns once on the first blog page of the session, then the cursor blinks three times. */
+    :global(:root:not(.mark-settled)) .brand :global(.mk-prompt .chev) { animation: turn .6s .35s cubic-bezier(.6, 0, .2, 1) both; }
+    :global(:root:not(.mark-settled)) .brand :global(.mk-prompt .cur) { animation: cursor 1s 1s steps(1) 3 both; }
+  }
+  @keyframes turn { from { transform: translateX(10px) rotate(90deg); } }
+  @keyframes cursor { 0%, 50% { opacity: 0; } 51%, 100% { opacity: 1; } }
+
   .site-nav { display: flex; align-items: center; gap: clamp(14px, 2.2vw, 28px); font-size: var(--step-small); font-weight: 500; }
   .site-nav a { color: var(--ink); text-decoration: none; padding-block: 6px; }
   .site-nav a:hover, .site-nav a[aria-current='page'] { color: var(--accent); }

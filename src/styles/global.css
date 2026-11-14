@@ -65,3 +65,11 @@
 @media (prefers-reduced-motion: reduce) {
   @view-transition { navigation: none; }
 }
+
+/* The theme switch's cross-fade: one even fade of the whole page, header included. */
+html.theming::view-transition-group(*),
+html.theming::view-transition-old(*),
+html.theming::view-transition-new(*) {
+  animation-duration: .45s;
+  animation-timing-function: ease-out;
+}

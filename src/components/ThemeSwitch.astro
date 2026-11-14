@@ -40,7 +40,11 @@
     } catch {
       /* Storage blocked: the choice still applies to this page view. */
     }
-    show(t);
+    // Cross-fade the whole page into the new theme, so nothing snaps while the rest fades.
+    // Instant where view transitions are missing or motion is reduced.
+    if (!document.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches) return show(t);
+    root.classList.add('theming');
+    document.startViewTransition(() => show(t)).finished.finally(() => root.classList.remove('theming'));
   }
 
   show(read());
