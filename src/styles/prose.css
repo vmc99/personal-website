@@ -1,0 +1,48 @@
+/* Article layout and long-form prose. The blog reads in the serif. */
+@layer prose {
+  .article {
+    --col: min(var(--column), 100% - 2 * var(--gutter));
+    --wide: min(var(--breakout), 100% - 2 * var(--gutter));
+    display: grid;
+    grid-template-columns: [full-start] 1fr [wide-start] calc((var(--wide) - var(--col)) / 2) [col-start] var(--col) [col-end] calc((var(--wide) - var(--col)) / 2) [wide-end] 1fr [full-end];
+    row-gap: var(--space-5);
+    padding-top: var(--space-6);
+  }
+  .article > * { grid-column: col; }
+  .article > .breakout { grid-column: wide; }
+
+  .article-head { display: grid; gap: var(--space-3); }
+  .article-head .meta a { color: inherit; }
+  .dek { font: italic 400 var(--step-lead)/1.35 var(--font-serif); color: var(--muted); }
+
+  .cover img { width: 100%; border-radius: var(--radius); }
+  figcaption { font-size: var(--step-small); color: var(--muted); margin-top: var(--space-2); }
+
+  .prose {
+    font: 400 var(--step-prose)/1.68 var(--font-serif);
+    font-optical-sizing: auto;
+    min-width: 0;
+  }
+  .prose > * + * { margin-top: 1.1em; }
+  .prose h2 { font: 400 clamp(1.5rem, 1.2rem + 1.2vw, 2rem)/1.15 var(--font-serif); letter-spacing: -0.015em; margin-top: 1.8em; }
+  .prose :is(h3, h4) { font: 600 var(--step-body)/1.3 var(--font-sans); margin-top: 1.6em; }
+  .prose :is(h2, h3, h4) + * { margin-top: 0.6em; }
+  .prose ul, .prose ol { padding-left: 1.3em; }
+  .prose li + li { margin-top: 0.35em; }
+  .prose blockquote { border-left: 3px solid var(--accent); padding-left: 1em; color: var(--muted); }
+  .prose hr { border: 0; border-top: 1px solid var(--line); margin-block: 2em; }
+  .prose :not(pre) > code {
+    font: 0.84em/1 var(--font-mono); background: var(--raised);
+    padding: 0.15em 0.35em; border-radius: var(--radius);
+  }
+  .prose img { border-radius: var(--radius); }
+  .prose table { border-collapse: collapse; font: var(--step-small)/1.4 var(--font-sans); display: block; overflow-x: auto; }
+  .prose th, .prose td { text-align: left; padding: 8px 12px; border-top: 1px solid var(--line); }
+
+  /* Code blocks break out of the reading column on wide screens. */
+  @media (min-width: 1040px) {
+    .prose .expressive-code { margin-inline: calc((var(--column) - var(--breakout)) / 2); }
+  }
+
+  .article-foot { padding-top: var(--space-4); border-top: 1px solid var(--line); }
+}

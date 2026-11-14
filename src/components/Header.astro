@@ -1,0 +1,49 @@
+---
+// Sticky header shared by both halves. The condense-on-scroll move, the owl and the blink
+// come in the foundation and interaction phases; this is the static shell.
+import Mark from './Mark.astro';
+import ThemeSwitch from './ThemeSwitch.astro';
+import { portfolioNav, blogNav, site } from '../site';
+
+interface Props {
+  half: 'portfolio' | 'blog';
+}
+const { half } = Astro.props;
+const isBlog = half === 'blog';
+const nav = isBlog ? blogNav : portfolioNav;
+const path = Astro.url.pathname;
+---
+<header class="site-head">
+  <div class="wrap head-in">
+    <a class="brand" href={isBlog ? '/blog/' : '/'} aria-label={isBlog ? `${site.blog.name}, blog home` : `${site.author}, home`}>
+      <Mark kind={isBlog ? 'prompt' : 'v'} />
+      <span class="brand-name" aria-hidden="true">{isBlog ? site.blog.name : site.author}</span>
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      {nav.map((item) => (
+        <a href={item.href} aria-current={path === item.href ? 'page' : undefined} class:list={{ wide: item.label === 'About' || item.label === 'Contact' }}>
+          {item.label}
+        </a>
+      ))}
+      <ThemeSwitch />
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-head {
+    position: sticky; top: 0; z-index: 20; background: var(--ground);
+    view-transition-name: site-head;
+  }
+  .head-in { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding-block: 16px; }
+  .brand {
+    display: inline-flex; align-items: center; gap: 12px; color: var(--ink); text-decoration: none;
+    white-space: nowrap; font: 500 1.3125rem/1.4 var(--font-serif); letter-spacing: -0.01em;
+  }
+  .brand:hover { color: var(--ink); }
+  .site-nav { display: flex; align-items: center; gap: clamp(14px, 2.2vw, 28px); font-size: var(--step-small); font-weight: 500; }
+  .site-nav a { color: var(--ink); text-decoration: none; padding-block: 6px; }
+  .site-nav a:hover, .site-nav a[aria-current='page'] { color: var(--accent); }
+  @media (max-width: 640px) { .site-nav .wide { display: none; } }
+  @media (max-width: 380px) { .brand { font-size: 1.125rem; gap: 9px; } }
+</style>

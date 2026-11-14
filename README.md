@@ -1,11 +1,11 @@
-# Personal Website
+# mvamsi.com
 
-## Dependencies
+The portfolio of Vamsi Mukkamala at [mvamsi.com](https://mvamsi.com) and the blog, Terminal Logs, at [mvamsi.com/blog](https://mvamsi.com/blog/). Built with [Astro](https://astro.build), deployed to GitHub Pages.
 
-- [Gulp](https://gulpjs.com/)
+```sh
+npm ci
+npm run dev      # http://localhost:4321
+npm run build    # production build in dist/
+```
 
-## To run locally
-
-1.  `gem install jekyll sass bundler jekyll-minifier jekyll-sitemap`
-2.  `npm install`
-3.  `npm start`
+Working notes for contributors and coding agents are in [AGENTS.md](AGENTS.md).

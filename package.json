@@ -1,29 +1,26 @@
 {
   "name": "mvamsi.com",
-  "version": "0.0.0",
-  "description": "A software engineer focused on designing, building & automating things",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/vmc99/mvamsi.com"
-  },
-  "homepage": "https://github.com/vmc99/mvamsi.com",
-  "main": "gulpfile.js",
+  "private": true,
+  "type": "module",
   "scripts": {
-    "start": "gulp serve --watch",
-    "build": "gulp build"
+    "dev": "astro dev",
+    "build": "astro build && pagefind --site dist --glob \"blog/**/*.html\"",
+    "preview": "astro preview",
+    "check": "astro check"
   },
-  "author": "Vamsi Mukkamala",
-  "license": "ISC",
+  "dependencies": {
+    "@astrojs/mdx": "8.1.6",
+    "@astrojs/rss": "4.0.19",
+    "@astrojs/sitemap": "3.7.5",
+    "@fontsource-variable/hanken-grotesk": "5.3.0",
+    "@fontsource-variable/jetbrains-mono": "5.3.0",
+    "@fontsource-variable/newsreader": "5.3.0",
+    "astro": "7.4.12",
+    "astro-expressive-code": "0.44.3"
+  },
   "devDependencies": {
-    "@nuscout/eslint-config": "^0.2.1",
-    "browser-sync": "^2.26.7",
-    "gulp": "^4.0.0",
-    "gulp-autoprefixer": "^7.0.0",
-    "gulp-clean-css": "^4.3.0",
-    "gulp-eslint": "^6.0.0",
-    "gulp-imagemin": "6.0.0",
-    "gulp-sass": "^5.1.0",
-    "gulp-uglify": "3.0.2",
-    "sass": "^1.77.8"
+    "@astrojs/check": "0.9.12",
+    "pagefind": "1.6.0",
+    "typescript": "6.0.3"
   }
 }

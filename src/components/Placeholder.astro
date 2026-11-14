@@ -1,0 +1,13 @@
+---
+// Wraps copy that is not confirmed yet. The release checklist fails while any
+// `data-placeholder` remains in the build output (see MIGRATION.md).
+interface Props {
+  note: string;
+}
+const { note } = Astro.props;
+---
+<span data-placeholder={note}><slot /></span>
+
+<style>
+  span { text-decoration: underline wavy var(--field-amber); text-decoration-skip-ink: none; text-underline-offset: 0.25em; }
+</style>

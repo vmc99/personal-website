@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://mvamsi.com/sitemap-index.xml

@@ -1,0 +1,57 @@
+# Builds the site on every push and pull request. Publishes to GitHub Pages only from main.
+# Until release, Pages still serves main from the branch (Jekyll) and this deploy job never runs,
+# because main has no workflow. At release the Pages source switches to "GitHub Actions"
+# (see .agents/portfolio-v2/MIGRATION.md).
+name: Build and deploy
+
+on:
+  push:
+    branches: [main, v2]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.ref }}
+  # Never cancel a deploy half-way; superseded branch builds can go.
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm run build
+      - name: Fail if placeholder copy reaches main
+        if: github.ref == 'refs/heads/main'
+        run: |
+          if grep -rl 'data-placeholder' dist; then
+            echo "Placeholder copy found in the build. See 'Still to come, before publishing' in DESIGN.md."
+            exit 1
+          fi
+      - uses: actions/upload-pages-artifact@v5
+        if: github.ref == 'refs/heads/main'
+        with:
+          path: dist
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

@@ -1,0 +1,57 @@
+---
+import Base from '../../layouts/Base.astro';
+import ActivityMap from '../../components/ActivityMap.astro';
+import { getPosts, readMinutes, formatDate, isoDate } from '../../lib/posts';
+import { site } from '../../site';
+
+const posts = await getPosts();
+---
+<Base title={site.blog.name} description={site.blog.description} half="blog">
+  <section class="wrap intro">
+    <div>
+      <h1 class="display">{site.blog.name}</h1>
+      <p class="lead">Notes from building software and working with AI, by <a href="/">Vamsi Mukkamala</a>.</p>
+    </div>
+    <ActivityMap posts={posts.filter((p) => !p.data.draft)} />
+  </section>
+
+  <section class="wrap" aria-labelledby="log-h">
+    <h2 id="log-h" class="visually-hidden">All posts</h2>
+    {posts.length === 0 ? (
+      <p class="meta">Nothing logged yet.</p>
+    ) : (
+      <ol class="rows">
+        {posts.map((p) => (
+          <li>
+            <time datetime={isoDate(p.data.publishedAt)}>{formatDate(p.data.publishedAt)}</time>
+            <div>
+              <h3 style={`view-transition-name: post-${p.id}`}><a href={`/blog/${p.id}/`}>{p.data.title}</a></h3>
+              <p>{p.data.description}</p>
+            </div>
+            <span class="meta">{p.data.draft ? 'Draft · ' : ''}{readMinutes(p.body)} min read</span>
+          </li>
+        ))}
+      </ol>
+    )}
+  </section>
+</Base>
+
+<style>
+  .intro {
+    padding-block: var(--space-7) var(--space-6);
+    display: grid; gap: var(--space-5); align-items: end;
+  }
+  .intro > div { display: grid; gap: var(--space-4); }
+  @media (min-width: 960px) { .intro { grid-template-columns: 1fr auto; } }
+  .rows { list-style: none; padding: 0; }
+  .rows li {
+    display: grid; gap: var(--space-1) var(--space-4); padding-block: var(--space-4);
+    border-top: 1px solid var(--line);
+  }
+  @media (min-width: 720px) { .rows li { grid-template-columns: 8rem 1fr auto; align-items: baseline; } }
+  .rows time { font-size: var(--step-small); color: var(--muted); }
+  .rows h3 { font: 400 var(--step-lead)/1.25 var(--font-serif); letter-spacing: -0.01em; }
+  .rows h3 a { color: var(--ink); text-decoration: none; }
+  .rows h3 a:hover { color: var(--accent); }
+  .rows p { color: var(--muted); max-width: 62ch; }
+</style>

@@ -1,0 +1,61 @@
+/* Logbook tokens. Declared once with light-dark(); color-scheme picks the side.
+   System is the default; data-theme on <html> pins Light or Dark.
+   Generic tokens (type, space, radius) are kept apart from the site's identity (colour, mark)
+   so they can be lifted into a shared package later. See DESIGN.md. */
+
+@layer tokens {
+  :root {
+    color-scheme: light dark;
+
+    /* Identity: colour */
+    --ground:       light-dark(#F2F1EC, #141613);
+    --raised:       light-dark(#E8E6DF, #1D201C);
+    --sunken:       light-dark(#DEDCD3, #0F110E);
+    --ink:          light-dark(#191B18, #E9E7E0);
+    --muted:        light-dark(#575A54, #A4A79F);
+    --line:         light-dark(#CFCDC3, #33372F);
+    --accent:       light-dark(#0E6A4B, #7FDCAB);
+    --accent-hover: light-dark(#0A5139, #A5EBC5);
+    --on-accent:    light-dark(#F2F1EC, #0F1A14);
+    --field-green:  light-dark(#CBE3D2, #1D3A2C);
+    --field-blue:   light-dark(#CEDCEC, #1D3046);
+    --field-amber:  light-dark(#EFDDA8, #43371A);
+    --field-plum:   light-dark(#E3D2E6, #39283E);
+    --t1: color-mix(in oklab, var(--accent) 38%, var(--raised));
+    --t2: color-mix(in oklab, var(--accent) 68%, var(--raised));
+
+    /* Generic: type */
+    --font-serif: 'Newsreader Variable', 'Iowan Old Style', Georgia, serif;
+    --font-sans:  'Hanken Grotesk Variable', 'Helvetica Neue', Arial, sans-serif;
+    --font-mono:  'JetBrains Mono Variable', ui-monospace, monospace;
+    --step-small:   0.875rem;
+    --step-body:    clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+    --step-prose:   clamp(1.1875rem, 1.1rem + 0.3vw, 1.3125rem);
+    --step-lead:    clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem);
+    --step-head:    clamp(2rem, 1.4rem + 2.6vw, 3.5rem);
+    --step-display: clamp(3rem, 1rem + 8.5vw, 7.5rem);
+
+    /* Generic: space, shape, layout */
+    --space-1: 4px;  --space-2: 8px;  --space-3: 16px; --space-4: 24px;
+    --space-5: 40px; --space-6: 64px; --space-7: 104px; --space-8: 168px;
+    --radius: 4px;
+    --page: 1240px;
+    --column: 42rem;
+    --breakout: 58rem;
+    --gutter: clamp(20px, 4vw, 48px);
+
+    /* Generic: motion */
+    --hd: .64s;
+    --he: cubic-bezier(.25, .1, .25, 1);
+  }
+
+  :root[data-theme='light'] { color-scheme: light; }
+  :root[data-theme='dark']  { color-scheme: dark; }
+
+  /* .flip inverts the scheme for one subtree: the contact band. */
+  .flip { color-scheme: dark; }
+  :root[data-theme='dark'] .flip { color-scheme: light; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) .flip { color-scheme: light; }
+  }
+}

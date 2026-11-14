@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portfolio home explorations</title>
+<link rel="icon" href="data:,">
+<!-- Preview only: production self-hosts the fonts. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400..700&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="explore.css">
+</head>
+<body data-page="portfolio">
+
+<header class="site-head">
+  <div class="wrap head-in">
+    <a class="brand" href="portfolio-home.html" aria-label="Vamsi Mukkamala, home"><span class="brand-mark"></span><span class="brand-name" data-text="Vamsi Mukkamala" aria-hidden="true"></span></a>
+    <nav class="site-nav" aria-label="Primary">
+      <a class="mid" href="#work">Work</a><a class="wide" href="#work">About</a><a href="blog-home.html">Blog</a><a class="wide" href="#contact">Contact</a>
+      <button class="theme-btn" type="button" data-theme-btn><i aria-hidden="true"></i><span>Auto</span></button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <h1 class="display">I design, build and automate things.</h1>
+      <div class="hero-row">
+        <div>
+          <p class="lead">Vamsi Mukkamala, software engineer in London. Most recently: an agentic refactoring pipeline for legacy Java, built with UCL and IBM Research.</p>
+          <div class="actions"><a class="btn" href="#work">See the work</a><a href="mailto:hello@mvamsi.com">hello@mvamsi.com</a></div>
+        </div>
+        <div class="fg" role="img" aria-label="A small owl drawn in square cells, in a field that runs off the edge of the page. It watches the pointer, smiles when you come close, flaps when clicked and falls asleep when left alone."></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <section class="band" id="work">
+      <p class="band-label"><strong>Selected work.</strong> Unchanged from the first preview; here so the page scrolls and the header can condense.</p>
+      <div class="fields">
+        <a class="field f-green" href="#work">
+          <h3>Anti-Pattern Resolutor</h3>
+          <p>An agentic refactoring pipeline for Java. It pairs SonarQube findings with LLM reasoning, and every proposed edit has to compile and pass the tests before it is kept.</p>
+          <p class="meta">With UCL and IBM Research. Python, LangGraph, vLLM, JaCoCo.</p>
+        </a>
+        <a class="field f-blue" href="#work">
+          <h3>Chameleon</h3>
+          <p>Reads COBOL and JCL, explains what it does, and turns it into Python.</p>
+          <p class="meta">Best Use of Langflow, Hacking Agents Hackathon London 2025.</p>
+        </a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-foot flip" id="contact">
+  <div class="wrap foot-in">
+    <div>
+      <h2>Say hello back.</h2>
+      <p><a href="mailto:hello@mvamsi.com">hello@mvamsi.com</a> · <a href="#contact">Résumé</a> · <a href="#contact">GitHub</a> · <a href="#contact">LinkedIn</a></p>
+    </div>
+    <div class="ff" aria-hidden="true"></div>
+  </div>
+</footer>
+
+<script src="explore.js"></script>
+</body>
+</html>

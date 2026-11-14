@@ -1,2 +1,0 @@
-<!-- This is a placeholder for a PNG version -->
-<!-- You would typically convert the SVG to PNG using a tool, but for now let's use a different approach -->

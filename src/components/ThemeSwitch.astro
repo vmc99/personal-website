@@ -1,0 +1,76 @@
+---
+// One button that cycles System → Light → Dark. Hidden until its script runs,
+// so with JavaScript off the site simply follows the OS and no dead control shows.
+---
+<button class="theme-btn" type="button" data-theme-btn hidden>
+  <i aria-hidden="true"></i><span>Auto</span>
+</button>
+
+<script>
+  const KEY = 'theme';
+  const order = ['system', 'light', 'dark'] as const;
+  type Theme = (typeof order)[number];
+  const label: Record<Theme, string> = { system: 'Auto', light: 'Light', dark: 'Dark' };
+  const root = document.documentElement;
+
+  const read = (): Theme => {
+    try {
+      const v = localStorage.getItem(KEY);
+      return v === 'light' || v === 'dark' ? v : 'system';
+    } catch {
+      return (root.dataset.theme as Theme) ?? 'system';
+    }
+  };
+
+  function show(t: Theme) {
+    if (t === 'system') delete root.dataset.theme;
+    else root.dataset.theme = t;
+    for (const btn of document.querySelectorAll<HTMLButtonElement>('[data-theme-btn]')) {
+      btn.dataset.t = t;
+      btn.lastElementChild!.textContent = label[t];
+      btn.setAttribute('aria-label', `Theme: ${label[t]}. Change theme`);
+      btn.hidden = false;
+    }
+  }
+
+  function choose(t: Theme) {
+    try {
+      if (t === 'system') localStorage.removeItem(KEY);
+      else localStorage.setItem(KEY, t);
+    } catch {
+      /* Storage blocked: the choice still applies to this page view. */
+    }
+    show(t);
+  }
+
+  show(read());
+  document.addEventListener('click', (e) => {
+    const btn = (e.target as Element).closest<HTMLButtonElement>('[data-theme-btn]');
+    if (!btn) return;
+    const now = (btn.dataset.t as Theme) ?? 'system';
+    choose(order[(order.indexOf(now) + 1) % order.length]);
+  });
+  // Another tab changed the choice.
+  addEventListener('storage', (e) => {
+    if (e.key === KEY || e.key === null) show(read());
+  });
+</script>
+
+<style>
+  .theme-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    font: 500 var(--step-small)/1 var(--font-sans); color: var(--ink);
+    background: var(--raised); border: 0; border-radius: 999px; padding: 9px 13px; cursor: pointer;
+  }
+  .theme-btn i {
+    width: 11px; height: 11px; border-radius: 50%;
+    box-shadow: inset 0 0 0 1.5px var(--ink);
+    background: linear-gradient(90deg, var(--ink) 50%, transparent 50%);
+  }
+  .theme-btn[data-t='light'] i { background: transparent; }
+  .theme-btn[data-t='dark'] i { background: var(--ink); }
+  @media (max-width: 640px) {
+    .theme-btn span { display: none; }
+    .theme-btn { padding: 11px; }
+  }
+</style>

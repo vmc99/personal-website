@@ -1,0 +1,24 @@
+---
+// The inverse contact band at the foot of both halves. The Twinkle cell strip comes later.
+import { site, social } from '../site';
+---
+<footer class="site-foot flip" id="contact">
+  <div class="wrap foot-in">
+    <p class="foot-title">Say hello back.</p>
+    <ul class="foot-links">
+      <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+      <li><a href="/static/resume.pdf">Résumé</a></li>
+      {social.map((s) => <li><a href={s.href} rel="me">{s.label}</a></li>)}
+      <li><a href="/blog/">Terminal Logs</a></li>
+    </ul>
+    <p class="foot-small">© {new Date().getFullYear()} {site.author} · <a href="/privacy-policy/">Privacy</a></p>
+  </div>
+</footer>
+
+<style>
+  .site-foot { background: var(--ground); color: var(--ink); margin-top: var(--space-7); }
+  .foot-in { padding-block: var(--space-6) var(--space-5); display: grid; gap: var(--space-4); }
+  .foot-title { font: 400 var(--step-head)/1.04 var(--font-serif); letter-spacing: -0.02em; }
+  .foot-links { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); }
+  .foot-small { font-size: var(--step-small); color: var(--muted); }
+</style>

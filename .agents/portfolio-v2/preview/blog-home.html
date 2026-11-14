@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Terminal Logs landing explorations</title>
+<link rel="icon" href="data:,">
+<!-- Preview only: production self-hosts the fonts. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400..700&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="explore.css">
+</head>
+<body data-page="blog">
+
+<header class="site-head">
+  <div class="wrap head-in">
+    <a class="brand" href="blog-home.html" aria-label="Terminal Logs, home"><span class="brand-mark"></span><span class="brand-name" data-text="Terminal Logs" aria-hidden="true"></span></a>
+    <nav class="site-nav" aria-label="Primary">
+      <a class="mid" href="#posts">Posts</a><a class="wide" href="#posts">Topics</a><a class="wide" href="#author">About</a><a href="portfolio-home.html">Portfolio</a>
+      <button class="theme-btn" type="button" data-theme-btn><i aria-hidden="true"></i><span>Auto</span></button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- Big title with the description under it, the log grid to the right, then the latest post across the page. -->
+  <section class="bhero">
+    <div class="wrap">
+      <div class="bh-top">
+        <div>
+          <h1 class="display">Terminal Logs</h1>
+          <p class="about">A working log by <a href="portfolio-home.html">Vamsi Mukkamala</a>: software engineering, AI agents and whatever I am building this month.</p>
+        </div>
+        <div>
+          <div class="cells heat" data-build="heat" data-heat="26"></div>
+          <p class="cap">Posts published in the last 26 weeks. Sample data.</p>
+        </div>
+      </div>
+      <a class="field f-amber lead-story" href="#posts">
+        <div>
+          <p class="meta" style="margin:0">Latest · AI engineering · sample</p>
+          <h2>Gating LLM refactors behind compile and tests</h2>
+          <p class="dek">Why the Anti-Pattern Resolutor never trusts a model’s edit until the build and the test suite agree.</p>
+          <p class="meta">8 min read (estimate)</p>
+        </div>
+        <div class="cells cover" data-build="cover" data-cover="gating-llm-refactors" aria-hidden="true"></div>
+      </a>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <section class="band" id="posts">
+      <ul class="posts">
+        <li><time>Sample</time><div><h3><a href="#posts">What a hackathon weekend taught us about COBOL</a></h3><p>Building Chameleon in two days, and what the judges asked that we could not answer.</p></div><span class="rt">6 min</span></li>
+        <li><time>Sample</time><div><h3><a href="#posts">A Zoom bot for a whole cohort</a></h3><p>Selenium, Discord webhooks and the edge cases of attending class automatically.</p></div><span class="rt">5 min</span></li>
+        <li><time datetime="2025-09-22">22 Sep 2025</time><div><h3><a href="#posts">Welcome to Terminal Logs</a></h3><p>What this log is for, and why it is named after the terminal.</p></div><span class="rt">2 min</span></li>
+      </ul>
+    </section>
+
+    <section class="band" id="author">
+      <div class="author">
+        <div class="big" data-mark></div>
+        <p><strong>Written by Vamsi Mukkamala</strong>, a software engineer in London. Someone arriving here from a search result has never seen the portfolio, so every blog page says who is writing and links back.</p>
+        <a class="btn" href="portfolio-home.html">See the portfolio</a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-foot flip">
+  <div class="wrap foot-in">
+    <div>
+      <h2>Say hello back.</h2>
+      <p><a href="mailto:hello@mvamsi.com">hello@mvamsi.com</a> · <a href="#posts">RSS</a> · <a href="#author">GitHub</a> · <a href="#author">LinkedIn</a></p>
+    </div>
+    <div class="ff" aria-hidden="true"></div>
+  </div>
+</footer>
+
+<script src="explore.js"></script>
+</body>
+</html>

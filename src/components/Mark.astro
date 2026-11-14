@@ -1,0 +1,22 @@
+---
+// The Logbook marks: the V as five cells (portfolio), and the same V turned on its side
+// into a prompt with a cursor cell (blog). Cell size 8 on a 10 grid, as in the preview.
+interface Props {
+  kind?: 'v' | 'prompt';
+  class?: string;
+}
+const { kind = 'v', class: cls } = Astro.props;
+const V: [number, number][] = [[0, 0], [1, 1], [2, 2], [3, 1], [4, 0]];
+const CHEV: [number, number][] = [[0, 0], [1, 1], [2, 2], [1, 3], [0, 4]];
+const cells = kind === 'v' ? V : CHEV;
+---
+<svg class:list={['mk', `mk-${kind}`, cls]} viewBox={kind === 'v' ? '0 0 48 28' : '0 0 48 48'} aria-hidden="true">
+  {cells.map(([c, r]) => <rect x={c * 10} y={r * 10} width="8" height="8" rx="1.6" />)}
+  {kind === 'prompt' && <rect class="cur" x="40" y="40" width="8" height="8" rx="1.6" />}
+</svg>
+
+<style>
+  .mk { height: 20px; width: auto; flex: none; overflow: visible; }
+  .mk-prompt { height: 24px; }
+  rect { fill: var(--accent); }
+</style>

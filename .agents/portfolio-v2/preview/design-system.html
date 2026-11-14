@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Logbook design preview</title>
+<link rel="icon" href="data:,">
+<!-- Preview only: production self-hosts these three OFL families through Astro's font pipeline. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400..700&family=JetBrains+Mono:wght@400..600&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&display=swap" rel="stylesheet">
+<style>
+/* ---------- Tokens: one declaration per token, both themes ---------- */
+:root {
+  color-scheme: light dark;                 /* System */
+  --ground:       light-dark(#F2F1EC, #141613);
+  --raised:       light-dark(#E8E6DF, #1D201C);
+  --sunken:       light-dark(#DEDCD3, #0F110E);
+  --ink:          light-dark(#191B18, #E9E7E0);
+  --muted:        light-dark(#575A54, #A4A79F);
+  --line:         light-dark(#CFCDC3, #33372F);
+  --accent:       light-dark(#0E6A4B, #7FDCAB);
+  --accent-hover: light-dark(#0A5139, #A5EBC5);
+  --on-accent:    light-dark(#F2F1EC, #0F1A14);
+  --field-green:  light-dark(#CBE3D2, #1D3A2C);
+  --field-blue:   light-dark(#CEDCEC, #1D3046);
+  --field-amber:  light-dark(#EFDDA8, #43371A);
+  --field-plum:   light-dark(#E3D2E6, #39283E);
+  --code-kw:      light-dark(#0E6A4B, #7FDCAB);
+  --code-str:     light-dark(#8A4B00, #E8C777);
+  --code-fn:      light-dark(#234E8F, #9CC2F0);
+
+  --font-serif: "Newsreader", "Iowan Old Style", Georgia, serif;
+  --font-sans:  "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --font-mono:  "JetBrains Mono", ui-monospace, Menlo, monospace;
+
+  --step-small:   0.875rem;
+  --step-body:    clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+  --step-prose:   clamp(1.1875rem, 1.1rem + 0.3vw, 1.3125rem);
+  --step-lead:    clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem);
+  --step-head:    clamp(2rem, 1.4rem + 2.6vw, 3.5rem);
+  --step-display: clamp(3rem, 1rem + 8.5vw, 7.5rem);
+
+  --space-1: 4px; --space-2: 8px; --space-3: 16px; --space-4: 24px;
+  --space-5: 40px; --space-6: 64px; --space-7: 104px; --space-8: 168px;
+  --radius: 4px;
+  --page: 1240px; --measure: 42rem; --breakout: 58rem;
+  --gutter: clamp(20px, 4vw, 48px);
+}
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"]  { color-scheme: dark; }
+
+/* ---------- Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--ground); color: var(--ink);
+  font: 400 var(--step-body)/1.5 var(--font-sans);
+  font-kerning: normal; text-rendering: optimizeLegibility;
+}
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
+a:hover { color: var(--accent-hover); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+::selection { background: var(--field-amber); color: var(--ink); }
+h1, h2, h3, p, figure, ul, ol, blockquote { margin: 0; }
+.wrap { max-width: var(--page); margin-inline: auto; padding-inline: var(--gutter); }
+.note { font-size: var(--step-small); color: var(--muted); max-width: 70ch; }
+.band { padding-block: var(--space-7); }
+.band + .band { padding-top: 0; }
+.band-label { font-size: var(--step-small); color: var(--muted); margin-bottom: var(--space-5); }
+.band-label strong { color: var(--ink); font-weight: 600; }
+
+/* ---------- Preview bar ---------- */
+.bar { position: sticky; top: 0; z-index: 5; background: var(--raised); }
+.bar .wrap { display: flex; gap: var(--space-3); align-items: center; justify-content: space-between; padding-block: 10px; flex-wrap: wrap; }
+.bar p { font-size: var(--step-small); color: var(--muted); }
+.seg { display: inline-flex; background: var(--sunken); border-radius: 999px; padding: 3px; }
+.seg button {
+  font: 500 var(--step-small)/1 var(--font-sans); color: var(--muted); background: none; border: 0;
+  padding: 8px 14px; border-radius: 999px; cursor: pointer;
+}
+.seg button[aria-pressed="true"] { background: var(--ground); color: var(--ink); }
+
+/* ---------- Shared site header ---------- */
+.site-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-3) var(--space-4); padding-block: var(--space-4); }
+.brand { display: inline-flex; align-items: center; gap: 12px; color: var(--ink); text-decoration: none; font-weight: 600; }
+.mark { display: grid; grid-template-columns: repeat(5, 6px); gap: 2px; }
+.mark i { width: 6px; height: 6px; border-radius: 1.5px; background: transparent; }
+.mark i.on { background: var(--accent); }
+.site-nav { display: flex; gap: clamp(14px, 2.5vw, 32px); font-size: var(--step-small); font-weight: 500; }
+.site-nav a { color: var(--ink); text-decoration: none; }
+.site-nav a:hover, .site-nav a[aria-current] { color: var(--accent); }
+
+/* ---------- Buttons, chips ---------- */
+.btn {
+  display: inline-block; background: var(--accent); color: var(--on-accent); text-decoration: none;
+  font-weight: 600; padding: 14px 22px; border-radius: var(--radius);
+  transition: background-color .15s ease-out;
+}
+.btn:hover { background: var(--accent-hover); color: var(--on-accent); }
+.chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.chip {
+  font: 500 var(--step-small)/1 var(--font-sans); color: var(--ink); background: var(--raised);
+  border: 0; border-radius: 999px; padding: 9px 14px; cursor: pointer;
+}
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--ground); }
+
+/* ---------- Portfolio hero ---------- */
+.hero { padding-block: var(--space-6) var(--space-7); }
+.hero-row { display: grid; gap: var(--space-6); align-items: end; margin-top: var(--space-5); }
+@media (min-width: 900px) { .hero-row { grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); } }
+.display {
+  font: 400 var(--step-display)/0.98 var(--font-serif); letter-spacing: -0.03em;
+  text-wrap: balance; max-width: 20ch; margin-left: -0.04em;
+}
+.lead { font-size: var(--step-lead); line-height: 1.35; max-width: 34ch; }
+.masthead .lead { margin-top: var(--space-4); }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); margin-top: var(--space-5); }
+.cells { display: grid; gap: clamp(4px, 0.7vw, 8px); }
+.cells i { aspect-ratio: 1; border-radius: var(--radius); background: var(--raised); }
+.cells i.l1 { background: color-mix(in oklab, var(--accent) 38%, var(--raised)); }
+.cells i.l2 { background: color-mix(in oklab, var(--accent) 68%, var(--raised)); }
+.cells i.l3 { background: var(--accent); }
+.hero .cells { grid-template-columns: repeat(9, 1fr); }
+.hero figcaption { margin-top: var(--space-3); }
+
+/* ---------- Project fields ---------- */
+.fields { display: grid; gap: var(--space-3); }
+@media (min-width: 900px) { .fields { grid-template-columns: 7fr 5fr; } }
+.field { border-radius: var(--radius); padding: clamp(24px, 4vw, 48px); display: flex; flex-direction: column; gap: var(--space-3); min-height: 320px; color: var(--ink); text-decoration: none; }
+.field:hover { color: var(--ink); }
+.field h3 { font: 400 var(--step-head)/1.02 var(--font-serif); letter-spacing: -0.02em; }
+.field p { max-width: 44ch; }
+.field .meta { margin-top: auto; font-size: var(--step-small); color: var(--muted); }
+.f-green { background: var(--field-green); } .f-blue { background: var(--field-blue); }
+.f-amber { background: var(--field-amber); } .f-plum { background: var(--field-plum); }
+
+/* ---------- Blog index ---------- */
+.masthead { display: grid; gap: var(--space-5); align-items: end; }
+@media (min-width: 900px) { .masthead { grid-template-columns: 1fr auto; } }
+.masthead h2 { font: 400 var(--step-display)/0.98 var(--font-serif); letter-spacing: -0.03em; font-size: clamp(2.75rem, 1rem + 6vw, 5.5rem); }
+.heat { width: min(100%, 390px); }
+.heat .cells { grid-template-columns: repeat(26, 1fr); gap: 3px; }
+.heat .cells i { border-radius: 2px; }
+.heat p { margin-top: var(--space-2); }
+.feature { margin-top: var(--space-6); min-height: 0; }
+.feature h3 { max-width: 18ch; }
+.posts { list-style: none; padding: 0; margin-top: var(--space-5); }
+.posts li { display: grid; gap: var(--space-1) var(--space-4); padding-block: var(--space-4); }
+.posts li + li { border-top: 1px solid var(--line); }
+@media (min-width: 760px) { .posts li { grid-template-columns: 9.5rem 1fr 6rem; align-items: baseline; } }
+.posts time, .posts .rt { font-size: var(--step-small); color: var(--muted); font-variant-numeric: tabular-nums; }
+.posts h3 { font: 400 var(--step-lead)/1.2 var(--font-serif); font-size: clamp(1.375rem, 1.2rem + 0.8vw, 1.75rem); letter-spacing: -0.01em; }
+.posts h3 a { color: var(--ink); text-decoration: none; }
+.posts h3 a:hover { color: var(--accent); }
+.posts p { color: var(--muted); max-width: 60ch; margin-top: 4px; }
+@media (min-width: 760px) { .posts .rt { text-align: right; } }
+
+/* ---------- Article ---------- */
+.article { display: grid; gap: var(--space-6); grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 1120px) { .article { grid-template-columns: 13rem minmax(0, 1fr); } }
+.toc { font-size: var(--step-small); display: none; }
+@media (min-width: 1120px) { .toc { display: block; position: sticky; top: 84px; align-self: start; } }
+.toc p { color: var(--muted); margin-bottom: var(--space-2); }
+.toc a { display: block; color: var(--muted); text-decoration: none; padding-block: 5px; }
+.toc a[aria-current] { color: var(--ink); font-weight: 600; }
+.prose { max-width: var(--breakout); }
+.prose > * { max-width: var(--measure); }
+.prose .wide { max-width: var(--breakout); }
+.a-meta { font-size: var(--step-small); color: var(--muted); font-variant-numeric: tabular-nums; }
+.a-title { font: 400 var(--step-head)/1.04 var(--font-serif); font-size: clamp(2.5rem, 1.5rem + 4vw, 4.5rem); letter-spacing: -0.025em; text-wrap: balance; margin-top: var(--space-3); }
+.dek { font: 400 var(--step-lead)/1.35 var(--font-serif); color: var(--muted); margin-top: var(--space-4); }
+.prose p.t, .prose blockquote, .prose ol.fn { font: 400 var(--step-prose)/1.68 var(--font-serif); text-wrap: pretty; }
+.prose p.t { margin-top: 1.1em; }
+.prose h2 { font: 500 1.75rem/1.2 var(--font-serif); letter-spacing: -0.01em; margin-top: var(--space-6); }
+.prose code { font: 0.86em/1 var(--font-mono); background: var(--raised); padding: 0.15em 0.35em; border-radius: 3px; }
+.prose sup a { text-decoration: none; font: 600 0.7em/1 var(--font-sans); padding: 0 2px; }
+.pull { margin-top: var(--space-5); padding-left: var(--space-4); border-left: 4px solid var(--accent); font-size: var(--step-lead) !important; line-height: 1.35 !important; }
+.code { margin-top: var(--space-5); background: var(--sunken); border-radius: var(--radius); overflow: hidden; }
+.code header { display: flex; justify-content: space-between; align-items: center; padding: 10px 10px 10px 18px; font-size: var(--step-small); color: var(--muted); background: color-mix(in oklab, var(--sunken) 70%, var(--raised)); }
+.code header button { font: 500 var(--step-small)/1 var(--font-sans); color: var(--ink); background: var(--ground); border: 0; border-radius: var(--radius); padding: 8px 12px; cursor: pointer; }
+.code pre { margin: 0; padding: 18px; overflow-x: auto; font: 400 0.9375rem/1.6 var(--font-mono); tab-size: 4; }
+.code pre code { background: none; padding: 0; border-radius: 0; font: inherit; }
+.code .k { color: var(--code-kw); } .code .s { color: var(--code-str); } .code .f { color: var(--code-fn); } .code .c { color: var(--muted); }
+.fig { margin-top: var(--space-5); }
+.fig svg { display: block; width: 100%; height: auto; }
+.fig figcaption, .hero figcaption, .heat p { font-size: var(--step-small); color: var(--muted); }
+.fig figcaption { margin-top: var(--space-3); max-width: var(--measure); }
+.fn { margin-top: var(--space-6); padding: var(--space-4) 0 0 1.2em; border-top: 1px solid var(--line); font-size: 1rem !important; color: var(--muted); }
+
+/* ---------- Token sheet ---------- */
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--space-3); }
+.sw div { height: 72px; border-radius: var(--radius); box-shadow: inset 0 0 0 1px var(--line); }
+.sw p { font-size: var(--step-small); margin-top: 6px; line-height: 1.35; }
+.sw span { color: var(--muted); font-family: var(--font-mono); font-size: 0.78rem; display: block; }
+.specimen { display: grid; gap: var(--space-4); margin-top: var(--space-6); }
+.specimen > div { display: grid; gap: var(--space-2); }
+@media (min-width: 760px) { .specimen > div { grid-template-columns: 13rem 1fr; align-items: baseline; } }
+.specimen small { font-size: var(--step-small); color: var(--muted); }
+.site-foot { background: var(--ink); color: var(--ground); margin-top: var(--space-7); }
+.site-foot .wrap { padding-block: var(--space-6); display: grid; gap: var(--space-4); }
+.site-foot h2 { font: 400 var(--step-head)/1.02 var(--font-serif); letter-spacing: -0.02em; max-width: 16ch; }
+.site-foot a { color: var(--ground); }
+.site-foot .note { color: color-mix(in oklab, var(--ground) 72%, var(--ink)); }
+@media (prefers-reduced-motion: no-preference) {
+  .hero .cells i { transition: background-color .5s ease-out; }
+}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="wrap">
+    <p><strong style="color:var(--ink)">Logbook</strong> design preview for mvamsi.com and blog.mvamsi.com. Sample copy, not final.</p>
+    <div class="seg" role="group" aria-label="Theme">
+      <button type="button" data-set="system" aria-pressed="true">System</button>
+      <button type="button" data-set="light" aria-pressed="false">Light</button>
+      <button type="button" data-set="dark" aria-pressed="false">Dark</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Portfolio home ============ -->
+<div class="wrap">
+  <header class="site-head">
+    <a class="brand" href="#"><span class="mark" aria-hidden="true" data-v="5x3"></span>Vamsi Mukkamala</a>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="#" aria-current="page">Work</a><a href="#">About</a><a href="#blog">Blog</a><a href="#">Contact</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1 class="display">I design, build and automate things.</h1>
+    <div class="hero-row">
+    <div>
+      <p class="lead">Vamsi Mukkamala, software engineer in London. Most recently: an agentic refactoring pipeline for legacy Java, built with UCL and IBM Research.</p>
+      <div class="actions">
+        <a class="btn" href="#work">See the work</a>
+        <a href="mailto:hello@mvamsi.com">hello@mvamsi.com</a>
+      </div>
+    </div>
+    <figure>
+      <div class="cells" data-v="9x5" role="img" aria-label="A grid of square cells; the filled cells draw the letter V."></div>
+      <figcaption>The one motif: cells on a grid. It is the logo, the blog's activity map and the cover of any post without artwork.</figcaption>
+    </figure>
+    </div>
+  </section>
+
+  <section class="band" id="work">
+    <p class="band-label"><strong>Selected work</strong> on the portfolio home. Solid colour fields replace cards, shadows and outlines.</p>
+    <div class="fields">
+      <a class="field f-green" href="#">
+        <h3>Anti-Pattern Resolutor</h3>
+        <p>An agentic refactoring pipeline for Java. It pairs SonarQube findings with LLM reasoning, and every proposed edit has to compile and pass the tests before it is kept.</p>
+        <p class="meta">With UCL and IBM Research. Python, LangGraph, vLLM, JaCoCo.</p>
+      </a>
+      <a class="field f-blue" href="#">
+        <h3>Chameleon</h3>
+        <p>Reads COBOL and JCL, explains what it does, and turns it into Python.</p>
+        <p class="meta">Best Use of Langflow, Hacking Agents Hackathon London 2025.</p>
+      </a>
+    </div>
+  </section>
+</div>
+
+<!-- ============ Blog index ============ -->
+<div class="wrap" id="blog">
+  <section class="band">
+    <p class="band-label"><strong>Terminal Logs index</strong> at blog.mvamsi.com. Same header, tokens and type; the serif takes over the reading. Post titles marked “sample” are not published posts.</p>
+    <div class="masthead">
+      <div>
+        <h2>Terminal Logs</h2>
+        <p class="lead">Notes on software engineering, AI and whatever I am building this month.</p>
+      </div>
+      <div class="heat">
+        <div class="cells" data-heat role="img" aria-label="Posting activity over the last 26 weeks (sample data)."></div>
+        <p>Posts in the last 26 weeks (sample data)</p>
+      </div>
+    </div>
+
+    <a class="field f-amber feature" href="#article">
+      <p class="a-meta" style="color:var(--muted)">Featured · sample</p>
+      <h3>Gating LLM refactors behind compile and tests</h3>
+      <p>Why the Anti-Pattern Resolutor never trusts a model's edit until the build and the test suite agree.</p>
+      <p class="meta">8 min read (estimate)</p>
+    </a>
+
+    <div class="chips" style="margin-top:var(--space-6)" role="group" aria-label="Topics">
+      <button class="chip" aria-pressed="true">All</button><button class="chip" aria-pressed="false">AI engineering</button>
+      <button class="chip" aria-pressed="false">Systems</button><button class="chip" aria-pressed="false">Tooling</button>
+      <button class="chip" aria-pressed="false">Notes</button>
+    </div>
+    <ul class="posts">
+      <li><time>Sample</time><div><h3><a href="#">What a hackathon weekend taught us about COBOL</a></h3><p>Building Chameleon in two days, and what the judges asked that we could not answer.</p></div><span class="rt">6 min</span></li>
+      <li><time>Sample</time><div><h3><a href="#">A Zoom bot for a whole cohort</a></h3><p>Selenium, Discord webhooks and the edge cases of attending class automatically.</p></div><span class="rt">5 min</span></li>
+      <li><time datetime="2025-09-22">22 Sep 2025</time><div><h3><a href="#">Welcome to Terminal Logs</a></h3><p>What this log is for, and why it is named after the terminal.</p></div><span class="rt">2 min</span></li>
+    </ul>
+  </section>
+</div>
+
+<!-- ============ Article ============ -->
+<div class="wrap" id="article">
+  <section class="band">
+    <p class="band-label"><strong>Technical article</strong>. A 42rem reading column with a wider breakout for code and figures. Copy and code are illustrative.</p>
+    <div class="article">
+      <nav class="toc" aria-label="On this page">
+        <p>On this page</p>
+        <a href="#" aria-current="true">The problem with plausible edits</a>
+        <a href="#">The gate</a><a href="#">What gets recorded</a><a href="#">What I would change</a>
+      </nav>
+      <article class="prose">
+        <p class="a-meta"><a href="#">AI engineering</a> · Sample date · 8 min read (estimate)</p>
+        <h1 class="a-title">Gating LLM refactors behind compile and tests</h1>
+        <p class="dek">A model can write a refactor that reads well and still breaks the build. The pipeline treats every edit as a claim to be checked.</p>
+
+        <p class="t">The Anti-Pattern Resolutor starts from <a href="#">SonarQube findings</a> and asks a model to propose a file-scoped edit that removes the smell without changing behaviour. The interesting part is what happens next: nothing is accepted until <code>mvn compile</code> and the existing test suite both pass.<sup><a href="#fn1" id="r1">1</a></sup></p>
+
+        <h2>The gate</h2>
+        <p class="t">The gate is small on purpose. It answers one question and records why.</p>
+
+        <div class="code wide">
+          <header><span>gate.py</span><button type="button">Copy</button></header>
+<pre><code><span class="k">def</span> <span class="f">gate</span>(change: Change, repo: Repo) -> Verdict:
+    <span class="s">"""Keep an edit only if the project still builds and its tests pass."""</span>
+    <span class="k">if not</span> repo.compiles(change):
+        <span class="k">return</span> Verdict.rejected(<span class="s">"compile"</span>)
+    <span class="k">if not</span> repo.tests_pass(change):
+        <span class="k">return</span> Verdict.rejected(<span class="s">"tests"</span>)
+    <span class="k">return</span> Verdict.accepted()  <span class="c"># static analysis re-runs later, for reporting only</span></code></pre>
+        </div>
+
+        <figure class="fig wide">
+          <svg viewBox="0 0 920 150" role="img" aria-label="Pipeline: findings, plan, edit, compile and test gate, report.">
+            <g font-family="Hanken Grotesk, sans-serif" font-size="15" font-weight="600" text-anchor="middle" fill="var(--ink)">
+              <rect x="0"   y="30" width="160" height="72" rx="4" fill="var(--field-blue)"/><text x="80"  y="71">Findings</text>
+              <rect x="190" y="30" width="160" height="72" rx="4" fill="var(--field-plum)"/><text x="270" y="71">Plan</text>
+              <rect x="380" y="30" width="160" height="72" rx="4" fill="var(--field-plum)"/><text x="460" y="71">File-scoped edit</text>
+              <rect x="570" y="30" width="160" height="72" rx="4" fill="var(--accent)"/><text x="650" y="71" fill="var(--on-accent)">Compile + tests</text>
+              <rect x="760" y="30" width="160" height="72" rx="4" fill="var(--field-amber)"/><text x="840" y="71">Report</text>
+              <g fill="var(--muted)" font-weight="400" font-size="13"><text x="650" y="128">rejected edits stop here</text></g>
+            </g>
+            <g stroke="var(--ink)" stroke-width="2" fill="none" stroke-linecap="round">
+              <path d="M164 66h20m-6-6 6 6-6 6M354 66h20m-6-6 6 6-6 6M544 66h20m-6-6 6 6-6 6M734 66h20m-6-6 6 6-6 6"/>
+            </g>
+          </svg>
+          <figcaption>Figures are drawn with the theme tokens, so they follow light and dark without inverting images. Illustrative diagram.</figcaption>
+        </figure>
+
+        <blockquote class="pull">An edit that reads well is a claim. The build is the evidence.</blockquote>
+
+        <ol class="fn"><li id="fn1">Sample footnote, with a return link. <a href="#r1" aria-label="Back to text">↩</a></li></ol>
+      </article>
+    </div>
+  </section>
+</div>
+
+<!-- ============ Tokens ============ -->
+<div class="wrap">
+  <section class="band">
+    <p class="band-label"><strong>Tokens</strong> for the theme you are looking at. Every text pairing used on this page measures at least 4.5:1.</p>
+    <div class="swatches" id="swatches"></div>
+
+    <div class="specimen">
+      <div><small>Display · Newsreader 400<br>48–120px, −0.03em, 0.98</small><p style="font:400 var(--step-display)/0.98 var(--font-serif);letter-spacing:-.03em">Logbook</p></div>
+      <div><small>Heading · Newsreader 400<br>32–56px, −0.02em</small><p style="font:400 var(--step-head)/1.04 var(--font-serif);letter-spacing:-.02em">Systems, automation, AI</p></div>
+      <div><small>Lead · 20–26px</small><p style="font-size:var(--step-lead);line-height:1.35;max-width:36ch">The supporting line under a headline, in the sans on the portfolio and the serif on articles.</p></div>
+      <div><small>Portfolio body · Hanken Grotesk 400<br>17–19px, 1.5</small><p style="max-width:62ch">Interface text, navigation, captions and short portfolio paragraphs are set in the sans. Dates use tabular figures: 22 Sep 2025.</p></div>
+      <div><small>Article body · Newsreader 400<br>19–21px, 1.68, 42rem measure</small><p style="font:400 var(--step-prose)/1.68 var(--font-serif);max-width:var(--measure)">Long reading is set in the serif at a larger size, because Newsreader runs small next to a grotesk. The measure holds near 68 characters.</p></div>
+      <div><small>Code · JetBrains Mono<br>code only, never labels</small><p style="font:400 .9375rem/1.6 var(--font-mono)">git log --oneline --since="2 weeks ago"</p></div>
+    </div>
+  </section>
+</div>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <h2>Say hello back.</h2>
+    <p><a href="mailto:hello@mvamsi.com">hello@mvamsi.com</a> · <a href="#">Résumé</a> · <a href="#">GitHub</a> · <a href="#">LinkedIn</a></p>
+    <p class="note">The contact band is the one inverse surface: ink ground in the light theme, paper ground in the dark theme.</p>
+  </div>
+</footer>
+
+<script>
+// Theme: System leaves color-scheme to the OS; Light and Dark pin it. Production reads a cookie before first paint.
+const root = document.documentElement, segs = [...document.querySelectorAll('.seg button')];
+segs.forEach(b => b.addEventListener('click', () => {
+  b.dataset.set === 'system' ? root.removeAttribute('data-theme') : root.setAttribute('data-theme', b.dataset.set);
+  segs.forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  paintSwatches();
+}));
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => paintSwatches());
+
+// The V mark: a V drawn on a cols x rows grid.
+document.querySelectorAll('[data-v]').forEach(el => {
+  const [cols, rows] = el.dataset.v.split('x').map(Number), mid = (cols - 1) / 2;
+  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+    const i = document.createElement('i'), step = mid / (rows - 1);
+    const on = Math.abs(Math.abs(c - mid) - (rows - 1 - r) * step) < 0.01;
+    if (on) i.className = el.classList.contains('mark') ? 'on' : ['l3', 'l3', 'l2', 'l2', 'l1'][rows - 1 - r] || 'l3';
+    el.append(i);
+  }
+});
+
+// Activity map: 26 weeks x 7 days, sample data.
+document.querySelectorAll('[data-heat]').forEach(el => {
+  el.style.gridTemplateRows = 'repeat(7, auto)'; el.style.gridAutoFlow = 'column';
+  for (let n = 0; n < 182; n++) {
+    const i = document.createElement('i'), h = (n * 2654435761 >>> 0) % 97;
+    if (h < 5) i.className = 'l3'; else if (h < 11) i.className = 'l2'; else if (h < 19) i.className = 'l1';
+    el.append(i);
+  }
+});
+
+// Token sheet reads the resolved values for the active theme.
+const names = ['ground','raised','sunken','ink','muted','line','accent','accent-hover','field-green','field-blue','field-amber','field-plum'];
+function paintSwatches() {
+  const dark = getComputedStyle(root).colorScheme === 'dark' ||
+    (!root.dataset.theme && matchMedia('(prefers-color-scheme: dark)').matches);
+  const sheet = [...document.styleSheets].find(s => !s.href), rule = [...sheet.cssRules].find(r => r.selectorText === ':root');
+  document.getElementById('swatches').innerHTML = names.map(n => {
+    const m = rule.style.getPropertyValue('--' + n).match(/light-dark\(\s*(#\w+),\s*(#\w+)\s*\)/);
+    return `<div class="sw"><div style="background:var(--${n})"></div><p>${n}<span>${m ? m[dark ? 2 : 1] : ''}</span></p></div>`;
+  }).join('');
+}
+paintSwatches();
+</script>
+</body>
+</html>

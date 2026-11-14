@@ -1,0 +1,263 @@
+/* Logbook explorations, round 5: shared by portfolio-home.html and blog-home.html.
+   Tokens are copied unchanged from design-system.html. */
+:root {
+  color-scheme: light dark;
+  --ground:       light-dark(#F2F1EC, #141613);
+  --raised:       light-dark(#E8E6DF, #1D201C);
+  --sunken:       light-dark(#DEDCD3, #0F110E);
+  --ink:          light-dark(#191B18, #E9E7E0);
+  --muted:        light-dark(#575A54, #A4A79F);
+  --line:         light-dark(#CFCDC3, #33372F);
+  --accent:       light-dark(#0E6A4B, #7FDCAB);
+  --accent-hover: light-dark(#0A5139, #A5EBC5);
+  --on-accent:    light-dark(#F2F1EC, #0F1A14);
+  --field-green:  light-dark(#CBE3D2, #1D3A2C);
+  --field-blue:   light-dark(#CEDCEC, #1D3046);
+  --field-amber:  light-dark(#EFDDA8, #43371A);
+  --t1: color-mix(in oklab, var(--accent) 38%, var(--raised));
+  --t2: color-mix(in oklab, var(--accent) 68%, var(--raised));
+
+  --font-serif: "Newsreader", "Iowan Old Style", Georgia, serif;
+  --font-sans:  "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+
+  --step-small:   0.875rem;
+  --step-body:    clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+  --step-lead:    clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem);
+  --step-head:    clamp(2rem, 1.4rem + 2.6vw, 3.5rem);
+  --step-display: clamp(3rem, 1rem + 8.5vw, 7.5rem);
+
+  --space-1: 4px; --space-2: 8px; --space-3: 16px; --space-4: 24px;
+  --space-5: 40px; --space-6: 64px; --space-7: 104px;
+  --radius: 4px; --page: 1240px;
+  --gutter: clamp(16px, 4vw, 48px);
+  }
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"]  { color-scheme: dark; }
+/* .flip inverts the scheme for one subtree: the contact band and the preview panel. */
+.flip { color-scheme: dark; }
+:root[data-theme="dark"] .flip { color-scheme: light; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme]) .flip { color-scheme: light; } }
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 80px; }
+body {
+  margin: 0; background: var(--ground); color: var(--ink);
+  font: 400 var(--step-body)/1.5 var(--font-sans); font-kerning: normal;
+  padding-bottom: 150px;      /* room for the preview panel */
+}
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
+a:hover { color: var(--accent-hover); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+::selection { background: var(--field-amber); color: var(--ink); }
+h1, h2, h3, p, figure, ul, ol { margin: 0; }
+.wrap { max-width: var(--page); margin-inline: auto; padding-inline: var(--gutter); }
+.note { font-size: var(--step-small); color: var(--muted); max-width: 70ch; }
+.band { padding-block: 0 var(--space-7); }
+.band-label { font-size: var(--step-small); color: var(--muted); margin-bottom: var(--space-5); max-width: 78ch; }
+.band-label strong { color: var(--ink); font-weight: 600; }
+.display { font: 400 var(--step-display)/0.98 var(--font-serif); letter-spacing: -0.03em; text-wrap: balance; max-width: 20ch; margin-left: -0.04em; }
+.lead { font-size: var(--step-lead); line-height: 1.35; max-width: 34ch; }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); margin-top: var(--space-5); }
+.btn { display: inline-block; background: var(--accent); color: var(--on-accent); text-decoration: none; font-weight: 600; padding: 14px 22px; border-radius: var(--radius); }
+.btn:hover { background: var(--accent-hover); color: var(--on-accent); }
+
+/* ---------- Sticky header: one triggered move, timed like the Anthropic wordmark ----------
+   Nothing here changes layout: only clip-path, transform and opacity animate, on one duration and one curve.
+   Both sites: the name is wiped. Portfolio: at the same time the V closes up into the owl's face, which it
+   already is (two ear tufts, two eyes, a beak); the eyes then follow the pointer (--ex, --ey from script)
+   and blink. At the top it opens back into the V, whose tips blink instead. */
+:root { --hd: .64s; --he: cubic-bezier(.25, .1, .25, 1); }
+.site-head { position: sticky; top: 0; z-index: 20; background: var(--ground); box-shadow: 0 1px 0 transparent; }
+.scrolled .site-head { box-shadow: 0 1px 0 var(--line); }
+.head-in { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding-block: 16px; }
+.brand { display: inline-flex; align-items: center; gap: 12px; color: var(--ink); text-decoration: none; white-space: nowrap; font: 500 1.3125rem/1.4 var(--font-serif); letter-spacing: -0.01em; }
+.brand:hover { color: var(--ink); }
+.brand-mark { display: inline-flex; align-items: center; --mh: 20px; }
+.brand[data-kind="prompt"] .brand-mark { --mh: 24px; }
+.brand-name { display: inline-flex; white-space: pre; }
+.brand-name .w1 { clip-path: inset(-6px 0% -6px -2px); }
+.scrolled .brand-name .w1 { clip-path: inset(-6px var(--d, 100%) -6px -2px); }
+.mk-owl g, .mk-owl rect { transform-box: fill-box; transform-origin: center; }
+.scrolled .mk-owl .o1 { transform: translate(1px, 1px) scale(.7); }          /* ear tufts drop a little and shrink */
+.scrolled .mk-owl .o5 { transform: translate(-1px, 1px) scale(.7); }
+.scrolled .mk-owl .o2 { transform: translate(1.5px, -3px); }                 /* eyes rise */
+.scrolled .mk-owl .o4 { transform: translate(-1.5px, -3px); }
+.scrolled .mk-owl .o3 { transform: translate(0, -5px) scale(.55, .45); }     /* the beak tucks up small under them */
+.scrolled .mk-owl :is(.o2, .o4) rect { transform: translate(var(--ex, 0px), var(--ey, 0px)); }
+.scrolled body.blink .mk-owl :is(.o2, .o4) rect { transform: translate(var(--ex, 0px), var(--ey, 0px)) scaleY(.15); }
+:root:not(.scrolled) body.blink .brand .mk-owl :is(.o1, .o5) rect { transform: scaleY(.15); }
+@media (prefers-reduced-motion: no-preference) {
+  .site-head { transition: box-shadow var(--hd) var(--he), background-color .45s ease-out; }
+  .brand-name .w1 { transition: clip-path var(--hd) var(--he); }
+  .mk-owl g { transition: transform var(--hd) var(--he); }
+  .mk-owl :is(.o2, .o4) rect { transition: transform .14s ease-out; }
+  .brand.no-anim, .brand.no-anim * { transition: none !important; }
+}
+.site-nav { display: flex; align-items: center; gap: clamp(14px, 2.2vw, 28px); font-size: var(--step-small); font-weight: 500; }
+.site-nav a { color: var(--ink); text-decoration: none; padding-block: 6px; }
+.site-nav a:hover { color: var(--accent); }
+.theme-btn { display: inline-flex; align-items: center; gap: 8px; font: 500 var(--step-small)/1 var(--font-sans); color: var(--ink); background: var(--raised); border: 0; border-radius: 999px; padding: 9px 13px; cursor: pointer; }
+.theme-btn i { width: 11px; height: 11px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--ink); background: linear-gradient(90deg, var(--ink) 50%, transparent 50%); }
+@media (max-width: 640px) { .site-nav .wide, .theme-btn span { display: none; } .theme-btn { padding: 11px; } }
+@media (max-width: 380px) { .site-nav .mid { display: none; } .brand { font-size: 1.125rem; gap: 9px; } }
+
+/* ---------- Marks ---------- */
+.mk { height: var(--mh, 22px); width: auto; display: block; flex: none; overflow: visible; }
+.mk rect { fill: var(--accent); }
+@media (prefers-reduced-motion: no-preference) {
+  /* The blog's prompt mark is the V turned on its side; it turns once on load, then the cursor blinks three times. */
+  .brand-mark .mk-prompt .chev { transform-box: fill-box; transform-origin: center; animation: turn .6s .35s cubic-bezier(.6, 0, .2, 1) both; }
+  .brand-mark .mk-prompt .cur { animation: blink 1s 1s steps(1) 3 both; }
+  @keyframes turn { from { transform: translateX(10px) rotate(90deg); } }
+  @keyframes blink { 0%, 50% { opacity: 0; } 51%, 100% { opacity: 1; } }
+  /* When the blog intro plays, it does the turn itself: the header mark holds still under the overlay,
+     then, once the intro has landed on it, only the cursor blinks its three times. */
+  .intro-run .brand-mark .mk-prompt :is(.chev, .cur), .intro-done .brand-mark .mk-prompt .chev { animation: none; }
+  .intro-done .brand-mark .mk-prompt .cur { animation: blink 1s steps(1) 3 both; }
+}
+.intro-run .brand-mark .mk-prompt .cur { opacity: 0; }
+
+/* ---------- Cells ---------- */
+.cells { display: grid; gap: clamp(4px, 0.7vw, 8px); }
+.cells i, .cells a { aspect-ratio: 1; border-radius: var(--radius); background: var(--raised); display: block; }
+.cells .hot { background: var(--t1); transition-duration: .06s; }
+.cells .l1 { background: var(--t1); } .cells .l2 { background: var(--t2); } .cells .l3 { background: var(--accent); }
+.cap { font-size: var(--step-small); color: var(--muted); margin-top: var(--space-3); max-width: 62ch; }
+@media (prefers-reduced-motion: no-preference) {
+  body, .site-head, .field, .site-foot, .theme-btn { transition: background-color .45s ease-out, color .45s ease-out; }
+  .cells i, .cells a { transition: background-color .45s ease-out; }
+}
+
+/* ---------- Portfolio hero: an owl drawn in the field ----------
+   Small cells, green. The field bleeds off the right edge of the page and fades out on all four sides. */
+.hero { position: relative; padding-block: var(--space-6) var(--space-7); overflow: clip; }
+.hero > .wrap { position: relative; z-index: 1; }
+.hero-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-5) var(--space-6); margin-top: var(--space-5); align-items: center; }
+@media (min-width: 900px) { .hero-row { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); } }
+
+/* .fg is the hero's field, .ff the footer's. The fade is two gradients, one across and one down, intersected. */
+.fg, .ff { --fl: 12%; --fr: 12%; --fy: 64px;
+  display: grid; grid-template-columns: repeat(var(--cols, 12), var(--cell, 24px)); grid-auto-rows: var(--cell, 24px); gap: var(--gap, 4px);
+  justify-content: center; margin-inline: calc(-1 * var(--gutter));
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--fl), #000 calc(100% - var(--fr)), transparent), linear-gradient(to bottom, transparent, #000 var(--fy), #000 calc(100% - var(--fy)), transparent);
+          mask-image: linear-gradient(to right, transparent, #000 var(--fl), #000 calc(100% - var(--fr)), transparent), linear-gradient(to bottom, transparent, #000 var(--fy), #000 calc(100% - var(--fy)), transparent);
+  -webkit-mask-composite: source-in; mask-composite: intersect; }
+.ff { --fl: 14%; --fr: 14%; }
+@media (min-width: 900px) {
+  .fg, .ff { --fl: 16%; --fr: 6%; justify-content: start; margin-left: 0; margin-right: calc(-1 * (var(--gutter) + max(0px, (100vw - var(--page)) / 2))); }
+  .ff { --fl: 18%; }
+}
+.fg i, .ff i { display: block; border-radius: var(--rad, 4px); background: var(--raised); }
+.fg { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+
+/* The owl's cells. In dark the pupils go dark and the whites bright, so the eyes read at a glance. */
+:root { --owl-white: light-dark(color-mix(in oklab, var(--t1) 50%, #FFFFFF), color-mix(in oklab, var(--accent) 30%, var(--ink)));
+        --owl-pupil: light-dark(var(--accent), var(--ground)); }
+.fg i.hot { background: color-mix(in oklab, var(--t1) 70%, var(--raised)); }     /* first, so the owl's own cells win */
+.fg i.b, .fg i.z1 { background: var(--t1); }          /* body; a fading Z */
+.fg i.s, .fg i.z  { background: var(--t2); }          /* belly; a Z */
+.fg i.k { background: var(--accent); }                /* beak, feet, closed lids */
+.fg i.w { background: var(--owl-white); }
+.fg i.q { background: var(--owl-pupil); }
+@media (prefers-reduced-motion: no-preference) { .fg i { transition: background-color .12s ease-out; } }
+
+/* Header mark cells blink in place (see the header section above). */
+.brand-mark rect { transform-box: fill-box; transform-origin: center; }
+@media (prefers-reduced-motion: no-preference) { .brand-mark rect { transition: transform .09s ease-in-out; } }
+
+/* ---------- Footer twinkle, both sites ----------
+   A strip of the same cells beside "Say hello back." Now and then one warms up and fades back, slowly.
+   The band is the inverse surface, so these tokens resolve to its own scheme. */
+.foot-in { grid-template-columns: minmax(0, 1fr); align-items: center; column-gap: var(--space-6); }
+@media (min-width: 900px) { .foot-in { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); } }
+.foot-in > div:first-child { display: grid; gap: var(--space-4); }
+.ff i.tw { background: var(--t1); }
+@media (prefers-reduced-motion: no-preference) { .ff i { transition: background-color 1.6s ease-in-out; } }
+
+/* ---------- Colour fields ---------- */
+.fields { display: grid; gap: var(--space-3); }
+@media (min-width: 900px) { .fields { grid-template-columns: 7fr 5fr; } }
+.field { border-radius: var(--radius); padding: clamp(24px, 4vw, 48px); display: flex; flex-direction: column; gap: var(--space-3); min-height: 300px; color: var(--ink); text-decoration: none; }
+.field:hover { color: var(--ink); }
+.field h3, .field h2 { font: 400 var(--step-head)/1.02 var(--font-serif); letter-spacing: -0.02em; }
+.field p { max-width: 44ch; }
+.field .meta { margin-top: auto; font-size: var(--step-small); color: var(--muted); }
+.f-green { background: var(--field-green); } .f-blue { background: var(--field-blue); } .f-amber { background: var(--field-amber); }
+
+/* ---------- Blog hero: big title, the log grid, the lead story ---------- */
+.bhero { padding-block: var(--space-6) var(--space-7); }
+.heat { grid-auto-flow: column; grid-template-rows: repeat(7, auto); grid-auto-columns: 1fr; gap: clamp(2px, 0.3vw, 4px); }
+.heat i, .heat a { border-radius: 2px; }
+.heat a:hover { background: var(--accent-hover); }
+.about { font-size: var(--step-lead); line-height: 1.35; max-width: 34ch; margin-top: var(--space-4); }
+.bh-top { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-5) var(--space-6); align-items: end; margin-bottom: var(--space-5); }
+@media (min-width: 900px) { .bh-top { grid-template-columns: minmax(0, 1fr) minmax(0, 340px); } }
+.lead-story { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-5); min-height: 0; }
+@media (min-width: 900px) { .lead-story { grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); align-items: stretch; min-height: 440px; } }
+.lead-story > div:first-child { display: flex; flex-direction: column; gap: var(--space-3); }
+.lead-story h2 { font-size: clamp(2.5rem, 1.2rem + 5vw, 5rem); line-height: 1; letter-spacing: -0.025em; max-width: 13ch; text-wrap: balance; }
+.lead-story .dek { font-size: var(--step-lead); line-height: 1.35; max-width: 34ch; }
+.cover { grid-template-columns: repeat(6, 1fr); gap: 6px; align-content: end; }
+.cover i { background: color-mix(in oklab, var(--ink) 9%, transparent); }
+.cover i.l1 { background: color-mix(in oklab, var(--ink) 26%, transparent); }
+.cover i.l2 { background: color-mix(in oklab, var(--ink) 52%, transparent); }
+.cover i.l3 { background: var(--ink); }
+
+/* Peek: a small card over the activity map. No shadow, as everywhere; the border separates it. */
+.peek { position: fixed; z-index: 30; left: 0; top: 0; width: min(300px, calc(100vw - 32px)); display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: start; padding: 10px 12px 10px 10px; background: var(--ground); color: var(--ink); border: 1px solid var(--line); border-radius: var(--radius); text-decoration: none; opacity: 0; pointer-events: none; }
+.peek:hover { color: var(--ink); }
+.peek.on { opacity: 1; }
+.peek.tap { pointer-events: auto; }
+.peek-cv { width: 50px; padding: 6px; gap: 2px; border-radius: 2px; }
+.peek-cv i { border-radius: 1px; }
+.peek-meta { font-size: 0.75rem; line-height: 1.35; color: var(--muted); }
+.peek-t { font: 400 1.125rem/1.15 var(--font-serif); letter-spacing: -0.01em; margin-block: 3px 4px; text-wrap: balance; }
+.heat a:focus-visible { outline-offset: 1px; }
+@media (prefers-reduced-motion: no-preference) {
+  .peek { transform: translateY(4px); transition: opacity .15s ease-out, transform .15s ease-out; }
+  .peek.below { transform: translateY(-4px); }
+  .peek.on { transform: none; }
+}
+
+.posts { list-style: none; padding: 0; }
+.posts li { display: grid; gap: var(--space-1) var(--space-4); padding-block: var(--space-4); }
+.posts li + li { border-top: 1px solid var(--line); }
+@media (min-width: 760px) { .posts li { grid-template-columns: 9.5rem 1fr 6rem; align-items: baseline; } .posts .rt { text-align: right; } }
+.posts time, .posts .rt { font-size: var(--step-small); color: var(--muted); font-variant-numeric: tabular-nums; }
+.posts h3 { font: 400 clamp(1.375rem, 1.2rem + 0.8vw, 1.75rem)/1.2 var(--font-serif); letter-spacing: -0.01em; }
+.posts h3 a { color: var(--ink); text-decoration: none; }
+.posts h3 a:hover { color: var(--accent); }
+.posts p { color: var(--muted); max-width: 60ch; margin-top: 4px; }
+.author { display: grid; gap: var(--space-3) var(--space-5); align-items: center; background: var(--raised); border-radius: var(--radius); padding: clamp(24px, 4vw, 40px); }
+@media (min-width: 760px) { .author { grid-template-columns: auto 1fr auto; } }
+.author .big { --mh: 40px; }
+.author p { max-width: 56ch; }
+
+/* ---------- Footer: the one inverse surface ---------- */
+.site-foot { background: var(--ground); color: var(--ink); overflow: clip; }
+.site-foot .wrap { padding-block: var(--space-6); display: grid; gap: var(--space-4); }
+.site-foot h2 { font: 400 var(--step-head)/1.02 var(--font-serif); letter-spacing: -0.02em; }
+.site-foot a { color: var(--ink); }
+
+/* ---------- Intro overlay ---------- */
+.intro { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; overflow: hidden; }
+.intro-bg { position: absolute; inset: 0; background: var(--ground); }
+.intro-mark { position: relative; display: grid; grid-template-columns: repeat(5, 30px); gap: 8px; transform-origin: 0 0; }
+.intro-mark i { width: 30px; height: 30px; border-radius: var(--radius); }
+.intro-mark .on { background: var(--accent); }
+/* The blog's intro: the prompt mark at intro size, its cells free to scale and the chevron free to turn about its centre. */
+.intro-prompt { position: relative; --mh: 150px; transform-origin: 0 0; }
+.intro-prompt :is(rect, .chev) { transform-box: fill-box; transform-origin: center; }
+
+/* ---------- Preview panel (not part of the design) ---------- */
+.panel { position: fixed; z-index: 50; left: 50%; bottom: 12px; transform: translateX(-50%); width: max-content; max-width: calc(100vw - 24px); background: var(--ground); color: var(--ink); border-radius: 10px; padding: 10px 12px; font-size: var(--step-small); }
+.panel-t { font: 600 var(--step-small)/1 var(--font-sans); color: var(--ink); background: none; border: 0; padding: 6px 4px; cursor: pointer; }
+.panel-b { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 8px; }
+.panel[data-open="false"] .panel-b { display: none; }
+.pg { display: flex; align-items: center; gap: 8px; }
+.pg > span { color: var(--muted); }
+.seg { display: inline-flex; flex-wrap: wrap; background: var(--sunken); border-radius: 999px; padding: 3px; }
+.seg button { font: 500 var(--step-small)/1 var(--font-sans); color: var(--muted); background: none; border: 0; padding: 7px 11px; border-radius: 999px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--ground); }
+@media (max-width: 700px) { .pg { flex-wrap: wrap; } .seg { border-radius: 14px; } }

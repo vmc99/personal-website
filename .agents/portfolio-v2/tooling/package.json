@@ -1,0 +1,11 @@
+{
+  "name": "portfolio-v2-qa",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "browser": "playwright-cli"
+  },
+  "devDependencies": {
+    "@playwright/cli": "0.1.22"
+  }
+}

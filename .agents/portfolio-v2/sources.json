@@ -1,0 +1,46 @@
+{
+  "checked_on": "2026-10-25",
+  "skills": [
+    {
+      "name": "design-taste-frontend",
+      "repository": "https://github.com/Leonxlnx/taste-skill",
+      "commit": "12af471f627f866411b4bd785b19646d3672784c",
+      "path": "skills/taste-skill",
+      "upstream_files_verified": 39,
+      "local_additions": [
+        "agents/openai.yaml (explicit invocation only)",
+        "LICENSE (copied from repository root)"
+      ],
+      "license": "MIT"
+    },
+    {
+      "name": "web-design-guidelines",
+      "repository": "https://github.com/vercel-labs/agent-skills",
+      "commit": "063bee94c3f4df8453406c830b0a7df0f2860278",
+      "path": "skills/web-design-guidelines",
+      "upstream_files_verified": 1,
+      "local_additions": [
+        "agents/openai.yaml (explicit invocation only)"
+      ],
+      "license": "No repository license file found in inspected tree; do not assume MIT."
+    },
+    {
+      "name": "playwright-cli",
+      "repository": "https://github.com/microsoft/playwright-cli",
+      "commit": "b1a5903c5b633b8c9f843ad7b629c2a78437040c",
+      "path": "skills/playwright-cli",
+      "upstream_files_verified": 11,
+      "local_additions": [
+        "agents/openai.yaml (explicit invocation only)",
+        "LICENSE (copied from repository root)"
+      ],
+      "license": "Apache-2.0"
+    }
+  ],
+  "cli": {
+    "package": "@playwright/cli",
+    "version": "0.1.22",
+    "playwright_dependency": "1.64.0-alpha-1790635538000",
+    "lockfile": "tooling/package-lock.json"
+  }
+}

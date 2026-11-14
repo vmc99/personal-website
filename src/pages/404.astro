@@ -1,0 +1,13 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Page not found" description="This page does not exist." half="portfolio">
+  <section class="wrap nf">
+    <h1 class="display">Not found.</h1>
+    <p class="lead">Nothing lives at this address. Try the <a href="/">home page</a> or <a href="/blog/">Terminal Logs</a>.</p>
+  </section>
+</Base>
+
+<style>
+  .nf { padding-block: var(--space-7); display: grid; gap: var(--space-4); }
+</style>

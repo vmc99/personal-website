@@ -1,0 +1,30 @@
+---
+// Portfolio home. Spike version: hero copy and a route into the blog, to prove the
+// layout, theme and the cross-document transition. Sections and the owl come later.
+import Base from '../layouts/Base.astro';
+import Placeholder from '../components/Placeholder.astro';
+import { site } from '../site';
+---
+<Base title={`${site.author}, software engineer`} description="Vamsi Mukkamala designs, builds and automates software. Software engineer at AECOM, in the AI for engineering team." half="portfolio">
+  <section class="hero wrap">
+    <h1 class="display">I design, build and automate things.</h1>
+    <p class="lead">
+      Vamsi Mukkamala, software engineer at AECOM in the AI for engineering team.
+      <Placeholder note="AECOM: title, start date and what can be said publicly">Most recently: details to come.</Placeholder>
+    </p>
+    <div class="actions">
+      <a class="btn" href="#work">Selected work</a>
+      <a href={`mailto:${site.email}`}>{site.email}</a>
+    </div>
+  </section>
+  <section class="wrap band" id="work">
+    <h2 class="heading">Writing</h2>
+    <p class="meta">The full portfolio sections come in phase 5. For now, <a href="/blog/">Terminal Logs</a>.</p>
+  </section>
+</Base>
+
+<style>
+  .hero { padding-block: var(--space-7) var(--space-6); display: grid; gap: var(--space-5); }
+  .actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); }
+  .band { display: grid; gap: var(--space-3); }
+</style>

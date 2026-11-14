@@ -1,0 +1,32 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { getPosts, formatDate, isoDate } from '../../../lib/posts';
+import { site } from '../../../site';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  const topics = [...new Set(posts.flatMap((p) => p.data.topics))];
+  return topics.map((topic) => ({
+    params: { topic },
+    props: { topic, posts: posts.filter((p) => p.data.topics.includes(topic)) },
+  }));
+}
+
+const { topic, posts } = Astro.props;
+---
+<Base title={`${topic} · ${site.blog.name}`} description={`Posts on ${topic} in ${site.blog.name}.`} half="blog">
+  <section class="wrap topic">
+    <p class="meta"><a href="/blog/">All posts</a></p>
+    <h1 class="heading">{topic}</h1>
+    <ul>
+      {posts.map((p) => (
+        <li><time class="meta" datetime={isoDate(p.data.publishedAt)}>{formatDate(p.data.publishedAt)}</time> <a href={`/blog/${p.id}/`}>{p.data.title}</a></li>
+      ))}
+    </ul>
+  </section>
+</Base>
+
+<style>
+  .topic { padding-block: var(--space-6); display: grid; gap: var(--space-4); }
+  ul { list-style: none; padding: 0; display: grid; gap: var(--space-2); }
+</style>

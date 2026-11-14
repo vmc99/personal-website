@@ -1,0 +1,60 @@
+---
+import { render } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import { getPosts, readMinutes, formatDate, isoDate, type Post } from '../../lib/posts';
+import { site } from '../../site';
+import '../../styles/prose.css';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props as { post: Post };
+const { Content } = await render(post);
+const { title, description, publishedAt, updatedAt, topics, cover } = post.data;
+const url = new URL(`/blog/${post.id}/`, site.url).href;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title,
+  description,
+  datePublished: publishedAt.toISOString(),
+  ...(updatedAt && { dateModified: updatedAt.toISOString() }),
+  author: { '@type': 'Person', name: site.author, url: site.url },
+  mainEntityOfPage: url,
+  isPartOf: { '@type': 'Blog', name: site.blog.name, url: `${site.url}/blog/` },
+};
+---
+<Base title={`${title} · ${site.blog.name}`} description={description} half="blog" type="article">
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  <article class="article" data-pagefind-body>
+    <header class="article-head">
+      <p class="meta">
+        {topics[0] && <><a href={`/blog/topics/${topics[0]}/`}>{topics[0]}</a> · </>}
+        <time datetime={isoDate(publishedAt)}>{formatDate(publishedAt)}</time>
+        {' · '}<span>{readMinutes(post.body)} min read (estimate)</span>
+      </p>
+      <h1 class="heading" style={`view-transition-name: post-${post.id}`}>{title}</h1>
+      <p class="dek">{description}</p>
+    </header>
+
+    {cover && (
+      <figure class="cover breakout">
+        <Image src={cover.src} alt={cover.alt} widths={[640, 960, 1280, 1856]} sizes="(min-width: 1000px) 58rem, 100vw" loading="eager" fetchpriority="high" />
+        {cover.caption && <figcaption>{cover.caption}</figcaption>}
+      </figure>
+    )}
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    <footer class="article-foot meta">
+      Written by <a href="/">{site.author}</a>.
+      {updatedAt && <> Updated <time datetime={isoDate(updatedAt)}>{formatDate(updatedAt)}</time>.</>}
+    </footer>
+  </article>
+</Base>
