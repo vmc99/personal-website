@@ -1,10 +1,10 @@
 ---
 // Portfolio home: hero, selected work, experience, about, writing (once two real posts exist).
-// The contact band is the shared footer. The owl in the hero's cell field comes in the
-// interaction phase. Unconfirmed copy is wrapped in <Placeholder>. See DESIGN.md.
+// The contact band is the shared footer. The owl lives in the hero's cell field. Unconfirmed copy is wrapped in <Placeholder>. See DESIGN.md.
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Placeholder from '../components/Placeholder.astro';
+import OwlField from '../components/OwlField.astro';
 import { experience, education, otherProjects, type Entry } from '../data/experience';
 import { getPosts, formatDate, isoDate } from '../lib/posts';
 import { site } from '../site';
@@ -13,7 +13,7 @@ const selected = (await getCollection('projects', ({ data }) => data.selected)).
 const posts = (await getPosts()).filter((p) => !p.data.draft);
 ---
 <Base title={`${site.author}, software engineer`} description="Vamsi Mukkamala designs, builds and automates software. Software engineer at AECOM, in the AI for engineering team." half="portfolio">
-  <section class="hero wrap">
+  <section class="hero"><div class="wrap">
     <h1 class="display">I design, build and automate things.</h1>
     <div class="hero-row">
       <div class="hero-text">
@@ -26,8 +26,9 @@ const posts = (await getPosts()).filter((p) => !p.data.draft);
           <a href={`mailto:${site.email}`}>{site.email}</a>
         </div>
       </div>
+      <OwlField />
     </div>
-  </section>
+  </div></section>
 
   <div class="wrap">
     <section class="band" id="work" aria-labelledby="work-h">
@@ -104,7 +105,7 @@ const posts = (await getPosts()).filter((p) => !p.data.draft);
 </Base>
 
 <style>
-  .hero { padding-block: var(--space-6) var(--space-7); }
+  .hero { padding-block: var(--space-6) var(--space-7); overflow-x: clip; }
   .hero-row {
     display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-5) var(--space-6);
     margin-top: var(--space-5); align-items: center;

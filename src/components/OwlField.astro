@@ -1,0 +1,224 @@
+---
+// The portfolio hero graphic: a small owl drawn in a field of cells that bleeds off the right
+// edge of the page and fades out on all four sides. Ported from the approved preview
+// (DESIGN.md, "Hero graphic"). It looks at the headline when nobody is there and follows the
+// pointer a cell at a time; its eyes smile when the pointer comes close; it flaps when clicked,
+// sending a ring across the field; it blinks with the header logo; eight seconds after the
+// pointer last moved it sleeps, with Z's drifting up. Static and awake under reduced motion.
+// Decorative: the page is complete without it.
+---
+<div
+  class="fg"
+  role="img"
+  aria-label="A small owl drawn in square cells, in a field that runs off the edge of the page. It watches the pointer, smiles when you come close, flaps when clicked and falls asleep when left alone."
+></div>
+
+<script>
+  import { startPresence, onLook, poke, idle, pointer, reduceMotion as reduce } from '../scripts/presence';
+
+  // Sprite letters are cell classes: b body, s belly, k beak, feet and closed lids, w eye white, q pupil.
+  const OWL = {
+    w: 12,
+    h: 13,
+    base: [
+      'b..........b', 'bb........bb', 'bbbbbbbbbbbb', 'bwwwwbbwwwwb', 'bwwwwbbwwwwb', 'bwwwwbbwwwwb', 'bwwwwbbwwwwb',
+      'bbbbbkkbbbbb', '.bbbbbbbbbb.', '.bsbsbbsbsb.', '.bbsbbbbsbb.', '..bbbbbbbb..', '...kk..kk...',
+    ],
+    eyes: [[2, 4], [8, 4]] as [number, number][], // top-left of each 2 by 2 pupil, looking straight ahead
+  };
+  const Z = ['zzzz', '..z.', '.z..', 'zzzz'];
+  type Put = (x: number, y: number, c: string) => void;
+  type Mood = 'idle' | 'happy' | 'wow' | 'sleep';
+  const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
+  const sprite = (put: Put, rows: string[], x0 = 0, y0 = 0) =>
+    rows.forEach((r, y) => [...r].forEach((c, x) => { if (c !== '.') put(x0 + x, y0 + y, c); }));
+  const list = (put: Put, cs: [number, number][], c: string) => cs.forEach(([x, y]) => put(x, y, c));
+
+  const fg = document.querySelector<HTMLElement>('.fg');
+  if (fg) {
+    let st = { t: 0, mood: 'idle' as Mood, gx: -1, gy: -1, blink: false, near: false, wowUntil: 0, jumpUntil: 0, reveal: 99, zs: [] as { x: number; y: number; age: number }[] };
+    let render = () => {};
+    let centre = (): [number, number] => [0, 0];
+    let pitch = 20;
+    let tick = 0;
+    const timers: number[] = [];
+
+    function drawOwl(put: Put) {
+      const m = st.mood;
+      const closed = m === 'sleep' || st.blink;
+      OWL.eyes.forEach(([ex, ey], i) => {
+        if (closed || m === 'happy') {
+          // Lids down: a line when closed, a smiling arc when happy.
+          const bx = i ? 7 : 1;
+          for (let y = 3; y <= 6; y++) for (let x = bx; x < bx + 4; x++) put(x, y, 'b');
+          list(put, closed ? [[bx, 5], [bx + 1, 5], [bx + 2, 5], [bx + 3, 5]] : [[bx, 5], [bx + 1, 4], [bx + 2, 4], [bx + 3, 5]], 'k');
+          return;
+        }
+        const x = m === 'wow' ? ex : ex + st.gx;
+        const y = m === 'wow' ? ey : ey + st.gy;
+        list(put, [[x, y], [x + 1, y], [x, y + 1], [x + 1, y + 1]], 'q');
+      });
+      if (m === 'wow') {
+        // Wings out, flapping.
+        const up = st.t % 2 ? -1 : 0;
+        list(put, [[-1, 8 + up], [-2, 7 + up], [-1, 9], [12, 8 + up], [13, 7 + up], [12, 9]], 'b');
+      }
+    }
+
+    function build(animate: boolean) {
+      clearInterval(tick);
+      timers.forEach(clearTimeout);
+      timers.length = 0;
+      const wide = innerWidth >= 900;
+      const W = document.documentElement.clientWidth;
+      fg!.style.cssText = '';
+      fg!.replaceChildren();
+      const left = fg!.getBoundingClientRect().left;
+      const room = wide ? W - left : W;
+      // Small cells. On a phone the owl stays clear of the side fades.
+      let p = (wide ? clamp((room * 0.5) / (OWL.w + 2), 18, 30) : clamp((W - 32) / (OWL.w + 3), 12, 24)) * 0.66;
+      p = Math.round(Math.max(wide ? 11 : 9, Math.min(p, wide ? 40 : (W * 0.74) / OWL.w)));
+      pitch = p;
+      // About 470px tall (380px on a phone): six rows above the owl for the Z's, four below.
+      const gap = Math.max(2, Math.round(p * 0.15));
+      const need = 6 + OWL.h + 4;
+      const rows = Math.max(need, Math.ceil((wide ? 470 : 380) / p));
+      const r0 = 6 + Math.floor((rows - need) * 0.45);
+      let cols = Math.ceil(room / p) + (wide ? 1 : 2);
+      if (!wide && (cols - OWL.w) % 2) cols++; // centred on a phone; an even margin keeps the owl dead centre
+      const fit = Math.floor(room / p);
+      const lo = Math.ceil(fit * 0.2);
+      const c0 = wide ? Math.max(lo, Math.round(fit * 0.42 - OWL.w / 2)) : (cols - OWL.w) >> 1;
+      fg!.style.cssText = `--cell:${p - gap}px;--gap:${gap}px;--cols:${cols};--rad:${Math.min(4, Math.round((p - gap) * 0.2))}px;--fy:${Math.round(Math.min(p * 2.6, rows * p * 0.2))}px`;
+      fg!.replaceChildren(...Array.from({ length: cols * rows }, () => document.createElement('i')));
+      const kids = fg!.children as HTMLCollectionOf<HTMLElement>;
+      const org = () => kids[0].getBoundingClientRect();
+      centre = () => { const o = org(); return [o.left + (c0 + OWL.w / 2) * p, o.top + (r0 + OWL.h * 0.45) * p]; };
+
+      st = { ...st, t: 0, mood: 'idle', gx: -1, gy: -1, wowUntil: 0, jumpUntil: 0, reveal: animate && !reduce ? -1 : 99, zs: [] };
+      let prev = new Map<number, string>();
+      const moodNow = (): Mood => {
+        if (Date.now() < st.wowUntil) return 'wow';
+        if (!reduce && idle()) return 'sleep';
+        return st.near ? 'happy' : 'idle';
+      };
+      render = () => {
+        st.mood = moodNow();
+        if (pointer.x !== null && !reduce && st.mood !== 'sleep') {
+          // Towards the pointer; up at the headline when nobody is there.
+          const [cx, cy] = centre();
+          const dx = pointer.x - cx, dy = pointer.y! - cy, d = Math.max(Math.hypot(dx, dy), p * 3);
+          st.gx = Math.round(clamp((dx / d) * 1.4, -1, 1));
+          st.gy = Math.round(clamp((dy / d) * 1.4, -1, 1));
+        } else {
+          st.gx = -1;
+          st.gy = -1;
+        }
+        const jump = Date.now() < st.jumpUntil ? -1 : 0;
+        const m = new Map<number, string>();
+        const at: Put = (x, y, c) => { if (x >= 0 && x < cols && y >= 0 && y < rows) m.set(y * cols + x, c); };
+        const put: Put = (x, y, c) => { if (y <= st.reveal) at(c0 + x, r0 + y + jump, c); }; // drawn in from the top on load
+        sprite(put, OWL.base);
+        if (st.reveal >= OWL.h) drawOwl(put);
+        st.zs.forEach((z) => sprite((x, y, c) => at(c0 + x, r0 + y, z.age > 1 ? 'z1' : c), Z, z.x, z.y));
+        prev.forEach((_, i) => { if (!m.has(i)) kids[i].className = ''; });
+        m.forEach((c, i) => { if (prev.get(i) !== c) kids[i].className = c; });
+        prev = m;
+      };
+
+      if (!reduce) {
+        tick = window.setInterval(() => {
+          if (document.hidden) return;
+          st.t++;
+          if (st.reveal < 99) st.reveal = st.reveal + 2 > OWL.h ? 99 : st.reveal + 2;
+          if (st.mood === 'sleep' && st.t % 22 === 0) st.zs.push({ x: OWL.w - 1, y: -3, age: 0 });
+          if (st.t % 6 === 0) st.zs = st.zs.filter((z) => { z.age++; z.x++; z.y--; return z.age <= 3; });
+          render();
+        }, 100);
+      }
+      render();
+
+      // Cells light up under the pointer; a click makes the owl flap and sends a ring out.
+      fg!.onpointermove = (e) => {
+        const c = e.target as HTMLElement & { _t?: number };
+        if (reduce || c.parentNode !== fg || c.className) return;
+        c.classList.add('hot');
+        clearTimeout(c._t);
+        c._t = window.setTimeout(() => c.classList.remove('hot'), 220);
+      };
+      fg!.onclick = (e) => {
+        if (reduce) return;
+        poke();
+        const now = Date.now();
+        st.wowUntil = now + 1000;
+        st.jumpUntil = now + 180;
+        const o = org(), cc = (e.clientX - o.left) / p, cr = (e.clientY - o.top) / p;
+        for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+          const d = Math.hypot(c + 0.5 - cc, r + 0.5 - cr);
+          const k = kids[r * cols + c];
+          if (d < 9) timers.push(window.setTimeout(() => {
+            if (!k.className || k.className === 'hot') {
+              k.classList.add('hot');
+              setTimeout(() => k.classList.remove('hot'), 180);
+            }
+          }, d * 32));
+        }
+        render();
+      };
+    }
+
+    onLook((x, y) => {
+      const [cx, cy] = centre();
+      st.near = Math.hypot(x - cx, y - cy) < Math.max(200, OWL.w * pitch * 0.85);
+      render();
+    });
+    document.addEventListener('logbook:blink', (e) => {
+      st.blink = (e as CustomEvent<{ on: boolean }>).detail.on;
+      render();
+    });
+
+    let rz = 0;
+    addEventListener('resize', () => { clearTimeout(rz); rz = window.setTimeout(() => build(false), 120); });
+    document.fonts.ready.then(() => build(true));
+    startPresence();
+  }
+</script>
+
+<style>
+  /* The field bleeds off the right edge on wide screens and is centred on a phone. The fade is two
+     gradients, one across and one down, intersected. */
+  .fg {
+    --fl: 12%; --fr: 12%; --fy: 64px;
+    display: grid; grid-template-columns: repeat(var(--cols, 12), var(--cell, 24px));
+    grid-auto-rows: var(--cell, 24px); gap: var(--gap, 4px);
+    justify-content: center; margin-inline: calc(-1 * var(--gutter));
+    min-height: 380px;
+    mask-image:
+      linear-gradient(to right, transparent, #000 var(--fl), #000 calc(100% - var(--fr)), transparent),
+      linear-gradient(to bottom, transparent, #000 var(--fy), #000 calc(100% - var(--fy)), transparent);
+    mask-composite: intersect;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  @media (min-width: 900px) {
+    .fg {
+      --fl: 16%; --fr: 6%; justify-content: start; margin-left: 0; min-height: 470px;
+      margin-right: calc(-1 * (var(--gutter) + max(0px, (100vw - var(--page)) / 2)));
+    }
+  }
+  .fg :global(i) { display: block; border-radius: var(--rad, 4px); background: var(--raised); }
+
+  /* The owl's cells. In dark the pupils go dark and the whites bright, so the eyes read at a glance. */
+  .fg {
+    --owl-white: light-dark(color-mix(in oklab, var(--t1) 50%, #FFFFFF), color-mix(in oklab, var(--accent) 30%, var(--ink)));
+    --owl-pupil: light-dark(var(--accent), var(--ground));
+  }
+  .fg :global(i.hot) { background: color-mix(in oklab, var(--t1) 70%, var(--raised)); } /* first, so the owl's cells win */
+  .fg :global(i.b), .fg :global(i.z1) { background: var(--t1); }  /* body; a fading Z */
+  .fg :global(i.s), .fg :global(i.z) { background: var(--t2); }   /* belly; a Z */
+  .fg :global(i.k) { background: var(--accent); }                 /* beak, feet, closed lids */
+  .fg :global(i.w) { background: var(--owl-white); }
+  .fg :global(i.q) { background: var(--owl-pupil); }
+  @media (prefers-reduced-motion: no-preference) {
+    .fg :global(i) { transition: background-color .12s ease-out; }
+  }
+</style>
