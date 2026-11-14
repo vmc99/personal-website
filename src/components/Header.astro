@@ -131,9 +131,13 @@ const name = isBlog ? site.blog.name : site.author;
     .brand.no-anim, .brand.no-anim :global(*) { transition: none !important; }
 
     /* Blog: the prompt turns once on the first blog page of the session, then the cursor blinks three times. */
-    :global(:root:not(.mark-settled)) .brand :global(.mk-prompt .chev) { animation: turn .6s .35s cubic-bezier(.6, 0, .2, 1) both; }
-    :global(:root:not(.mark-settled)) .brand :global(.mk-prompt .cur) { animation: cursor 1s 1s steps(1) 3 both; }
+    :global(:root:not(.mark-settled):not(.intro-pending):not(.intro-done)) .brand :global(.mk-prompt .chev) { animation: turn .6s .35s cubic-bezier(.6, 0, .2, 1) both; }
+    :global(:root:not(.mark-settled):not(.intro-pending):not(.intro-done)) .brand :global(.mk-prompt .cur) { animation: cursor 1s 1s steps(1) 3 both; }
+    /* When the intro plays it does the turn itself; once it lands, only the cursor blinks three times. */
+    :global(.intro-done) .brand :global(.mk-prompt .cur) { animation: cursor 1s steps(1) 3 both; }
   }
+  /* While the intro runs, the header mark hides under it so the travelling mark lands in its place. */
+  :global(.intro-pending) .brand :global(.mk) { opacity: 0; }
   @keyframes turn { from { transform: translateX(10px) rotate(90deg); } }
   @keyframes cursor { 0%, 50% { opacity: 0; } 51%, 100% { opacity: 1; } }
 

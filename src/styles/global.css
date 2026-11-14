@@ -95,3 +95,11 @@ html.theming::view-transition-old(theme-btn),
 html.theming::view-transition-new(theme-btn) {
   animation: none;
 }
+
+/* Intro (Intro.astro): until its script takes over, cover the page so it does not show and then
+   vanish under the overlay. If the script never runs, the cover fades out by itself. */
+html.intro-pending:not(.intro-run) body::after {
+  content: ''; position: fixed; inset: 0; z-index: 59; background: var(--ground);
+  animation: intro-cover-out .3s 2.5s forwards;
+}
+@keyframes intro-cover-out { to { opacity: 0; visibility: hidden; } }

@@ -179,7 +179,12 @@
 
     let rz = 0;
     addEventListener('resize', () => { clearTimeout(rz); rz = window.setTimeout(() => build(false), 120); });
-    document.fonts.ready.then(() => build(true));
+    // Draw the owl in after the intro, if one is playing.
+    if (document.documentElement.classList.contains('intro-pending')) {
+      document.addEventListener('logbook:intro-done', () => build(true), { once: true });
+    } else {
+      document.fonts.ready.then(() => build(true));
+    }
     startPresence();
   }
 </script>

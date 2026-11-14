@@ -1,0 +1,89 @@
+---
+// Intro: Draw. Once per session on each half, never under reduced motion, drawn over a page
+// that is already rendered (DESIGN.md, "Intro").
+// Portfolio: the V is drawn cell by cell, then travels to the header mark; about one second.
+// Blog: the V is drawn, turns on its side into the prompt, the cursor arrives and blinks once,
+// and the mark travels to the header, where the cursor blinks three more times; about 1.6s.
+// The inline script in Base.astro decides before first paint whether it plays and sets
+// `intro-pending` on <html>, which covers the page until this takes over. A CSS fallback
+// removes the cover after 2.5s if this script never runs. Built with the Web Animations API.
+import Mark from './Mark.astro';
+---
+<div class="intro" aria-hidden="true" hidden>
+  <div class="intro-bg"></div>
+  <div class="intro-mark">{Array.from({ length: 15 }, () => <i></i>)}</div>
+  <div class="intro-prompt"><Mark kind="prompt" /></div>
+</div>
+
+<script>
+  const root = document.documentElement;
+  const o = document.querySelector<HTMLElement>('.intro')!;
+  const blog = document.body.dataset.half === 'blog';
+  const V: [number, number][] = [[0, 0], [1, 1], [2, 2], [3, 1], [4, 0]];
+  const target = () => document.querySelector('.site-head .brand svg')!.getBoundingClientRect();
+  const travel = (el: Element, delay: number) => {
+    const from = el.getBoundingClientRect(), to = target();
+    el.animate(
+      [{ transform: 'none' }, { transform: `translate(${to.left - from.left}px, ${to.top - from.top}px) scale(${to.height / from.height})` }],
+      { duration: 420, delay, easing: 'cubic-bezier(.6,0,.2,1)', fill: 'forwards' }
+    );
+    o.querySelector('.intro-bg')!.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 420, delay, easing: 'ease-out', fill: 'forwards' });
+  };
+  const pop = (el: Element, delay: number) =>
+    el.animate([{ opacity: 0, transform: 'scale(.4)' }, { opacity: 1, transform: 'none' }], { duration: 220, delay, fill: 'both', easing: 'cubic-bezier(.2,.8,.2,1)' });
+
+  function portfolio() {
+    const m = o.querySelector('.intro-mark')!;
+    o.querySelector('.intro-prompt')!.remove();
+    V.forEach(([c, r], k) => {
+      const i = m.children[r * 5 + c];
+      i.className = 'on';
+      pop(i, 60 + k * 70);
+    });
+    travel(m, 620);
+  }
+
+  function prompt() {
+    o.querySelector('.intro-mark')!.remove();
+    const box = o.querySelector('.intro-prompt')!;
+    const chev = box.querySelector('.chev')!, cur = box.querySelector('.cur')!;
+    [...chev.children].forEach((r, k) => pop(r, 40 + k * 55));
+    chev.animate([{ transform: 'translateX(10px) rotate(90deg)' }, { transform: 'none' }], { duration: 400, delay: 480, fill: 'both', easing: 'cubic-bezier(.6,0,.2,1)' });
+    cur.animate(
+      [{ opacity: 0 }, { opacity: 1, offset: 0.02 }, { opacity: 1, offset: 0.5 }, { opacity: 0, offset: 0.51 }, { opacity: 0, offset: 0.75 }, { opacity: 1, offset: 0.76 }, { opacity: 1 }],
+      { duration: 360, delay: 860, fill: 'both' }
+    );
+    travel(box, 1220);
+  }
+
+  function done() {
+    o.remove();
+    root.classList.remove('intro-pending', 'intro-run');
+    root.classList.add('intro-done');
+    document.dispatchEvent(new CustomEvent('logbook:intro-done'));
+  }
+
+  if (root.classList.contains('intro-pending')) {
+    o.hidden = false;
+    root.classList.add('intro-run'); // the overlay now covers the page; the CSS cover can go
+    // Finish when the intro's own animations do, so it stays in step if the tab is throttled.
+    document.fonts.ready.then(() => {
+      blog ? prompt() : portfolio();
+      Promise.all(o.getAnimations({ subtree: true }).map((a) => a.finished)).then(done, done);
+    });
+  } else {
+    o.remove();
+  }
+</script>
+
+<style>
+  .intro { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; overflow: hidden; }
+  .intro-bg { position: absolute; inset: 0; background: var(--ground); }
+  .intro-mark { position: relative; display: grid; grid-template-columns: repeat(5, 30px); gap: 8px; transform-origin: 0 0; }
+  .intro-mark :global(i) { width: 30px; height: 30px; border-radius: var(--radius); }
+  .intro-mark :global(i.on) { background: var(--accent); opacity: 0; }
+  .intro-prompt { position: relative; transform-origin: 0 0; }
+  .intro-prompt :global(.mk-prompt) { height: 150px; }
+  .intro-prompt :global(.chev rect) { opacity: 0; }
+  .intro-prompt :global(.cur) { opacity: 0; }
+</style>
