@@ -1,8 +1,13 @@
 ---
-// The log grid: one cell per day for the last 26 weeks, a dark cell for each published
-// post (by its date). Nothing else is counted. Built at build time; a rebuild moves it on.
+// The log grid: one cell per day for the last 26 weeks, a dark cell for each published post,
+// placed by its date. Nothing else is counted. Built at build time; a rebuild moves it on.
+// Hovering or focusing a post cell shows a small preview card; on touch the first tap shows
+// the card and the card is the link. Screen readers get date and title in the label and
+// follow the link directly. See DESIGN.md, "Activity map".
+import Cover from './Cover.astro';
 import type { Post } from '../lib/posts';
-import { formatDate, isoDate } from '../lib/posts';
+import { formatDate, isoDate, readMinutes } from '../lib/posts';
+import { topic } from '../site';
 
 interface Props {
   posts: Post[];
@@ -11,45 +16,141 @@ interface Props {
 const { posts, weeks = 26 } = Astro.props;
 
 const DAY = 86_400_000;
-const today = new Date(isoDate(new Date()));               // midnight UTC
-const mondayOffset = (today.getUTCDay() + 6) % 7;          // days since Monday
+const today = new Date(isoDate(new Date())); // midnight UTC on the build day
+const mondayOffset = (today.getUTCDay() + 6) % 7;
 const start = new Date(today.valueOf() - (mondayOffset + (weeks - 1) * 7) * DAY);
 
-const byDay = new Map<string, Post[]>();
+const byDay = new Map<string, Post>();
 for (const p of posts) {
   const k = isoDate(p.data.publishedAt);
-  byDay.set(k, [...(byDay.get(k) ?? []), p]);
+  if (!byDay.has(k)) byDay.set(k, p); // posts are newest first; one cell shows the newest that day
 }
-
 const days = Array.from({ length: weeks * 7 }, (_, i) => {
   const d = new Date(start.valueOf() + i * DAY);
-  return { d, future: d > today, posts: byDay.get(isoDate(d)) ?? [] };
+  return { d, future: d > today, post: byDay.get(isoDate(d)) };
 });
-const count = days.reduce((n, x) => n + x.posts.length, 0);
+const shown = days.filter((x) => x.post).map((x) => x.post!);
+const count = shown.length;
 ---
 <figure class="log">
-  <div class="grid" style={`--weeks:${weeks}`}>
-    {days.map(({ d, future, posts }) =>
-      posts.length ? (
-        <a class="cell on" href={`/blog/${posts[0].id}/`} aria-label={`${formatDate(d)}: ${posts.map((p) => p.data.title).join('; ')}`}></a>
+  <div class="heat" style={`--weeks:${weeks}`}>
+    {days.map(({ d, future, post }) =>
+      post ? (
+        <a class="on" href={`/blog/${post.id}/`} data-peek={post.id} aria-label={`${formatDate(d)}: ${post.data.title}`}></a>
       ) : (
-        <i class:list={['cell', { future }]}></i>
+        <i class:list={{ future }}></i>
       )
     )}
   </div>
   <figcaption class="meta">
-    {count === 0 ? 'No posts' : count === 1 ? 'One post' : `${count} posts`} in the last {weeks} weeks.
+    {count === 0 ? 'No posts' : count === 1 ? 'One post' : `${count} posts`} published in the last {weeks} weeks.
   </figcaption>
+  {shown.map((p) => {
+    const t = topic(p.data.topics[0] ?? '');
+    return (
+      <template data-peek-for={p.id}>
+        <Cover slug={p.id} class={`peek-cv f-${t.field}`} />
+        <div>
+          <p class="peek-meta">{formatDate(p.data.publishedAt)} · {t.label}</p>
+          <p class="peek-t">{p.data.title}</p>
+          <p class="peek-meta">{readMinutes(p.body)} min read</p>
+        </div>
+      </template>
+    );
+  })}
 </figure>
 
-<style>
-  .log { display: grid; gap: var(--space-2); justify-items: start; }
-  .grid {
-    display: grid; grid-template-rows: repeat(7, 1fr); grid-auto-flow: column;
-    grid-auto-columns: 1fr; gap: 3px; width: min(100%, calc(var(--weeks) * 15px));
+<script>
+  const map = document.querySelector<HTMLElement>('.heat');
+  if (map) {
+    let card: HTMLAnchorElement | null = null;
+    let cardFor: HTMLAnchorElement | null = null;
+    let touch = false;
+
+    function show(a: HTMLAnchorElement, tap = false) {
+      const tpl = document.querySelector<HTMLTemplateElement>(`template[data-peek-for="${a.dataset.peek}"]`);
+      if (!tpl) return;
+      if (!card) {
+        card = document.createElement('a');
+        card.className = 'peek';
+        card.tabIndex = -1;
+        card.setAttribute('aria-hidden', 'true');
+        document.body.append(card);
+      }
+      card.classList.toggle('tap', tap);
+      card.href = a.href;
+      card.replaceChildren(tpl.content.cloneNode(true));
+      const r = a.getBoundingClientRect();
+      const w = card.offsetWidth, h = card.offsetHeight;
+      const headBottom = document.querySelector('.site-head')?.getBoundingClientRect().bottom ?? 0;
+      let y = r.top - h - 10;
+      const below = y < headBottom + 8;
+      if (below) y = r.bottom + 10;
+      card.style.left = `${Math.min(Math.max(r.left + r.width / 2 - w / 2, 16), innerWidth - w - 16)}px`;
+      card.style.top = `${y}px`;
+      card.classList.toggle('below', below);
+      cardFor = a;
+      requestAnimationFrame(() => card?.classList.add('on'));
+    }
+    function hide() {
+      card?.classList.remove('on', 'tap');
+      cardFor = null;
+    }
+    const cell = (e: Event) => (e.target as Element).closest<HTMLAnchorElement>('a[data-peek]');
+
+    map.addEventListener('pointerover', (e) => { const a = cell(e); if (a && e.pointerType === 'mouse') show(a); });
+    map.addEventListener('pointerout', (e) => {
+      if (e.pointerType === 'mouse' && cell(e) && !(e.relatedTarget as Element | null)?.closest?.('a[data-peek]')) hide();
+    });
+    map.addEventListener('focusin', (e) => { const a = cell(e); if (a?.matches(':focus-visible')) show(a); });
+    map.addEventListener('focusout', hide);
+    map.addEventListener('pointerdown', (e) => { touch = e.pointerType !== 'mouse'; });
+    // Screen readers send a click with no pointerdown, so they follow the link as normal.
+    map.addEventListener('click', (e) => {
+      const a = cell(e);
+      if (!a || !touch) return;
+      touch = false;
+      if (cardFor !== a) { e.preventDefault(); show(a, true); }
+    });
+    document.addEventListener('pointerdown', (e) => {
+      if (cardFor && !(e.target as Element).closest('.peek, a[data-peek]')) hide();
+    });
+    addEventListener('scroll', hide, { passive: true });
+    addEventListener('resize', hide);
   }
-  .cell { aspect-ratio: 1; border-radius: 2px; background: var(--raised); display: block; }
-  .cell.future { background: transparent; }
-  .cell.on { background: var(--accent); }
-  .cell.on:hover { background: var(--accent-hover); }
+</script>
+
+<style>
+  .log { display: grid; gap: var(--space-3); }
+  .heat {
+    display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, auto);
+    grid-auto-columns: 1fr; gap: clamp(2px, 0.3vw, 4px);
+  }
+  .heat :is(i, a) { aspect-ratio: 1; border-radius: 2px; background: var(--raised); display: block; }
+  .heat i.future { background: transparent; }
+  .heat a.on { background: var(--accent); }
+  .heat a.on:hover { background: var(--accent-hover); }
+  .heat a:focus-visible { outline-offset: 1px; }
+  figcaption { max-width: 62ch; }
+
+  /* The preview card. No shadow, as everywhere; the border separates it. */
+  :global(.peek) {
+    position: fixed; z-index: 30; left: 0; top: 0; width: min(300px, calc(100vw - 32px));
+    display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: start;
+    padding: 10px 12px 10px 10px; background: var(--ground); color: var(--ink);
+    border: 1px solid var(--line); border-radius: var(--radius); text-decoration: none;
+    opacity: 0; pointer-events: none;
+  }
+  :global(.peek:hover) { color: var(--ink); }
+  :global(.peek.on) { opacity: 1; }
+  :global(.peek.tap) { pointer-events: auto; }
+  :global(.peek .peek-cv) { width: 50px; padding: 6px; gap: 2px; border-radius: 2px; }
+  :global(.peek .peek-cv i) { border-radius: 1px; }
+  :global(.peek-meta) { font-size: var(--step-small); line-height: 1.35; color: var(--muted); margin: 0; }
+  :global(.peek-t) { font: 400 1.125rem/1.15 var(--font-serif); letter-spacing: -0.01em; margin: 3px 0 4px; text-wrap: balance; }
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.peek) { transform: translateY(4px); transition: opacity .15s ease-out, transform .15s ease-out; }
+    :global(.peek.below) { transform: translateY(-4px); }
+    :global(.peek.on) { transform: none; }
+  }
 </style>

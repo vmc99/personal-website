@@ -1,57 +1,123 @@
 ---
+// Blog landing: the big title with one line under it, the log grid to the right, the newest
+// post as a colour field with its cover, then the log, then who is writing. See DESIGN.md.
 import Base from '../../layouts/Base.astro';
 import ActivityMap from '../../components/ActivityMap.astro';
+import Cover from '../../components/Cover.astro';
+import Mark from '../../components/Mark.astro';
 import { getPosts, readMinutes, formatDate, isoDate } from '../../lib/posts';
-import { site } from '../../site';
+import { site, topic } from '../../site';
 
 const posts = await getPosts();
+const published = posts.filter((p) => !p.data.draft);
+const lead = posts[0]; // the newest post; posts are sorted newest first
+const rest = posts.filter((p) => p !== lead);
+const leadTopic = lead && topic(lead.data.topics[0] ?? '');
+const allTopics = [...new Set(published.flatMap((p) => p.data.topics))];
 ---
 <Base title={site.blog.name} description={site.blog.description} half="blog">
-  <section class="wrap intro">
-    <div>
-      <h1 class="display">{site.blog.name}</h1>
-      <p class="lead">Notes from building software and working with AI, by <a href="/">Vamsi Mukkamala</a>.</p>
+  <section class="wrap bhero">
+    <div class="bh-top">
+      <div class="bh-title">
+        <h1 class="display">{site.blog.name}</h1>
+        <p class="about">A working log by <a href="/">Vamsi Mukkamala</a>: software engineering, AI agents and whatever I am building this month.</p>
+      </div>
+      <ActivityMap posts={published} />
     </div>
-    <ActivityMap posts={posts.filter((p) => !p.data.draft)} />
-  </section>
 
-  <section class="wrap" aria-labelledby="log-h">
-    <h2 id="log-h" class="visually-hidden">All posts</h2>
-    {posts.length === 0 ? (
-      <p class="meta">Nothing logged yet.</p>
-    ) : (
-      <ol class="rows">
-        {posts.map((p) => (
-          <li>
-            <time datetime={isoDate(p.data.publishedAt)}>{formatDate(p.data.publishedAt)}</time>
-            <div>
-              <h3 style={`view-transition-name: post-${p.id}`}><a href={`/blog/${p.id}/`}>{p.data.title}</a></h3>
-              <p>{p.data.description}</p>
-            </div>
-            <span class="meta">{p.data.draft ? 'Draft · ' : ''}{readMinutes(p.body)} min read</span>
-          </li>
-        ))}
-      </ol>
+    {lead && (
+      <a class={`field f-${leadTopic!.field} lead-story`} href={`/blog/${lead.id}/`}>
+        <div class="ls-text">
+          <p class="meta">Latest · {leadTopic!.label}{lead.data.draft ? ' · Draft' : ''}</p>
+          <h2 style={`view-transition-name: post-${lead.id}`}>{lead.data.title}</h2>
+          <p class="dek">{lead.data.description}</p>
+          <p class="meta ls-foot">{readMinutes(lead.body)} min read (estimate)</p>
+        </div>
+        <Cover slug={lead.id} class="ls-cover" />
+      </a>
     )}
   </section>
+
+  <div class="wrap">
+    {allTopics.length > 0 && published.length >= 5 && (
+      <nav class="chips" aria-label="Topics">
+        {allTopics.map((t) => <a class="chip" href={`/blog/topics/${t}/`}>{topic(t).label}</a>)}
+      </nav>
+    )}
+
+    {rest.length > 0 && (
+      <section class="band" aria-labelledby="log-h">
+        <h2 id="log-h" class="visually-hidden">More posts</h2>
+        <ol class="posts">
+          {rest.map((p) => (
+            <li>
+              <time datetime={isoDate(p.data.publishedAt)}>{formatDate(p.data.publishedAt)}</time>
+              <div>
+                <h3 style={`view-transition-name: post-${p.id}`}><a href={`/blog/${p.id}/`}>{p.data.title}</a></h3>
+                <p>{p.data.description}</p>
+              </div>
+              <span class="rt">{p.data.draft ? 'Draft · ' : ''}{readMinutes(p.body)} min</span>
+            </li>
+          ))}
+        </ol>
+      </section>
+    )}
+
+    {posts.length === 0 && <p class="meta band">Nothing logged yet.</p>}
+
+    <section class="band author" aria-label="About the author">
+      <Mark kind="v" class="author-mark" />
+      <p><strong>Written by Vamsi Mukkamala</strong>, a software engineer at AECOM working on AI for engineering. The portfolio has the projects behind these notes.</p>
+      <a class="btn" href="/">See the portfolio</a>
+    </section>
+  </div>
 </Base>
 
 <style>
-  .intro {
-    padding-block: var(--space-7) var(--space-6);
-    display: grid; gap: var(--space-5); align-items: end;
+  .bhero { padding-block: var(--space-6); }
+  .bh-top {
+    display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-5) var(--space-6);
+    align-items: end; margin-bottom: var(--space-5);
   }
-  .intro > div { display: grid; gap: var(--space-4); }
-  @media (min-width: 960px) { .intro { grid-template-columns: 1fr auto; } }
-  .rows { list-style: none; padding: 0; }
-  .rows li {
-    display: grid; gap: var(--space-1) var(--space-4); padding-block: var(--space-4);
-    border-top: 1px solid var(--line);
+  @media (min-width: 900px) { .bh-top { grid-template-columns: minmax(0, 1fr) minmax(0, 340px); } }
+  .bh-title { display: grid; gap: var(--space-4); }
+  .about { font-size: var(--step-lead); line-height: 1.35; max-width: 34ch; }
+
+  .lead-story { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-5); }
+  @media (min-width: 900px) {
+    .lead-story { grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); align-items: stretch; min-height: 440px; }
   }
-  @media (min-width: 720px) { .rows li { grid-template-columns: 8rem 1fr auto; align-items: baseline; } }
-  .rows time { font-size: var(--step-small); color: var(--muted); }
-  .rows h3 { font: 400 var(--step-lead)/1.25 var(--font-serif); letter-spacing: -0.01em; }
-  .rows h3 a { color: var(--ink); text-decoration: none; }
-  .rows h3 a:hover { color: var(--accent); }
-  .rows p { color: var(--muted); max-width: 62ch; }
+  .ls-text { display: flex; flex-direction: column; gap: var(--space-3); }
+  .lead-story h2 {
+    font: 400 clamp(2.5rem, 1.2rem + 5vw, 5rem)/1 var(--font-serif);
+    letter-spacing: -0.025em; max-width: 13ch; text-wrap: balance;
+  }
+  .lead-story .dek { font-size: var(--step-lead); line-height: 1.35; max-width: 34ch; }
+  .ls-foot { margin-top: auto; }
+  .lead-story :global(.ls-cover) { max-width: 360px; width: 100%; justify-self: end; }
+  @media (max-width: 899px) { .lead-story :global(.ls-cover) { max-width: 160px; justify-self: start; gap: 4px; } }
+
+  .chips { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-5); }
+  .band { padding-bottom: var(--space-6); }
+
+  .posts { list-style: none; padding: 0; }
+  .posts li { display: grid; gap: var(--space-1) var(--space-4); padding-block: var(--space-4); }
+  .posts li + li { border-top: 1px solid var(--line); }
+  @media (min-width: 760px) {
+    .posts li { grid-template-columns: 9.5rem 1fr 6rem; align-items: baseline; }
+    .posts .rt { text-align: right; }
+  }
+  .posts time, .posts .rt { font-size: var(--step-small); color: var(--muted); font-variant-numeric: tabular-nums; }
+  .posts h3 { font: 400 clamp(1.375rem, 1.2rem + 0.8vw, 1.75rem)/1.2 var(--font-serif); letter-spacing: -0.01em; }
+  .posts h3 a { color: var(--ink); text-decoration: none; }
+  .posts h3 a:hover { color: var(--accent); }
+  .posts p { color: var(--muted); max-width: 60ch; margin-top: 4px; }
+
+  .author {
+    display: grid; gap: var(--space-3) var(--space-5); align-items: center;
+    background: var(--raised); border-radius: var(--radius); padding: clamp(24px, 4vw, 40px);
+  }
+  @media (min-width: 760px) { .author { grid-template-columns: auto 1fr auto; } }
+  .author :global(.author-mark) { height: 40px; }
+  .author p { max-width: 56ch; }
 </style>

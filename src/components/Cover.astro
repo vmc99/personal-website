@@ -1,0 +1,29 @@
+---
+// A generated cover for a post without artwork: a 6 by 7 cell pattern derived from the slug,
+// in ink tones, meant to sit on the post's topic field colour. Same input, same cover.
+interface Props {
+  slug: string;
+  class?: string;
+}
+const { slug, class: cls } = Astro.props;
+
+let h = 2166136261;
+for (const ch of slug) h = Math.imul(h ^ ch.charCodeAt(0), 16777619);
+h = (h >>> 0) % 1000;
+const rnd = (i: number) => (Math.imul(i + 1 + h, 2654435761) >>> 0) % 97;
+const level = (i: number) => {
+  const v = rnd(i);
+  return v < 10 ? 'l3' : v < 24 ? 'l2' : v < 44 ? 'l1' : '';
+};
+---
+<div class:list={['cover', cls]} aria-hidden="true">
+  {Array.from({ length: 42 }, (_, i) => <i class={level(i) || undefined}></i>)}
+</div>
+
+<style>
+  .cover { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; align-content: end; }
+  i { aspect-ratio: 1; border-radius: var(--radius); background: color-mix(in oklab, var(--ink) 9%, transparent); }
+  .l1 { background: color-mix(in oklab, var(--ink) 26%, transparent); }
+  .l2 { background: color-mix(in oklab, var(--ink) 52%, transparent); }
+  .l3 { background: var(--ink); }
+</style>
