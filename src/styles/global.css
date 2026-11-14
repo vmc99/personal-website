@@ -85,6 +85,10 @@ html.theming::view-transition-new(*) {
   animation-duration: .45s;
   animation-timing-function: ease-out;
 }
+/* During a theme change, nothing but the switch is lifted into its own layer: the header,
+   project and post titles all fade as part of the page. Otherwise named elements are drawn
+   above everything else mid-fade, over the sticky header when scrolled. */
+html.theming :not([data-theme-btn]) { view-transition-name: none !important; }
 /* The switch itself answers at once: its new label and icon appear without fading. */
 html.theming::view-transition-group(theme-btn),
 html.theming::view-transition-old(theme-btn),
