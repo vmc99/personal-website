@@ -1,30 +1,149 @@
 ---
-// Portfolio home. Spike version: hero copy and a route into the blog, to prove the
-// layout, theme and the cross-document transition. Sections and the owl come later.
+// Portfolio home: hero, selected work, experience, about, writing (once two real posts exist).
+// The contact band is the shared footer. The owl in the hero's cell field comes in the
+// interaction phase. Unconfirmed copy is wrapped in <Placeholder>. See DESIGN.md.
+import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Placeholder from '../components/Placeholder.astro';
+import { experience, education, otherProjects, type Entry } from '../data/experience';
+import { getPosts, formatDate, isoDate } from '../lib/posts';
 import { site } from '../site';
+
+const selected = (await getCollection('projects', ({ data }) => data.selected)).sort((a, b) => a.data.order - b.data.order);
+const posts = (await getPosts()).filter((p) => !p.data.draft);
 ---
 <Base title={`${site.author}, software engineer`} description="Vamsi Mukkamala designs, builds and automates software. Software engineer at AECOM, in the AI for engineering team." half="portfolio">
   <section class="hero wrap">
     <h1 class="display">I design, build and automate things.</h1>
-    <p class="lead">
-      Vamsi Mukkamala, software engineer at AECOM in the AI for engineering team.{' '}
-      <Placeholder note="AECOM: title, start date and what can be said publicly">Most recently: details to come.</Placeholder>
-    </p>
-    <div class="actions">
-      <a class="btn" href="#work">Selected work</a>
-      <a href={`mailto:${site.email}`}>{site.email}</a>
+    <div class="hero-row">
+      <div class="hero-text">
+        <p class="lead">
+          Vamsi Mukkamala, software engineer at AECOM in the AI for engineering team.{' '}
+          <Placeholder note="AECOM: what can be said publicly about the work">Most recently: details to come.</Placeholder>
+        </p>
+        <div class="actions">
+          <a class="btn" href="#work">See the work</a>
+          <a href={`mailto:${site.email}`}>{site.email}</a>
+        </div>
+      </div>
     </div>
   </section>
-  <section class="wrap band" id="work">
-    <h2 class="heading">Writing</h2>
-    <p class="meta">The full portfolio sections come in phase 5. For now, <a href="/blog/">Terminal Logs</a>.</p>
-  </section>
+
+  <div class="wrap">
+    <section class="band" id="work" aria-labelledby="work-h">
+      <h2 id="work-h" class="band-h">Selected work</h2>
+      <div class="fields">
+        {selected.map((p) => (
+          <a class={`field f-${p.data.field}`} href={`/work/${p.id}/`}>
+            <h3 style={`view-transition-name: work-${p.id}`}>{p.data.title}</h3>
+            <p>{p.data.summary}</p>
+            <p class="meta">{p.data.award ? `${p.data.award.label}.` : `${p.data.context}.`} {p.data.stack.slice(0, 4).join(', ')}.</p>
+          </a>
+        ))}
+      </div>
+      <ul class="others">
+        {otherProjects.map((o) => (
+          <li><a href={o.href}>{o.name}</a> <span>{o.note}</span></li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="band" id="experience" aria-labelledby="exp-h">
+      <h2 id="exp-h" class="band-h">Experience</h2>
+      <ol class="entries">
+        {experience.map((e: Entry) => (
+          <li>
+            <span class="when">{e.when}</span>
+            <div>
+              <h3>{e.role}, <span class="org">{e.org}</span></h3>
+              {e.note && <p>{e.note}</p>}
+              {e.placeholder && <p><Placeholder note={e.placeholder}>Details to come.</Placeholder></p>}
+            </div>
+            <span class="where">{e.where}</span>
+          </li>
+        ))}
+      </ol>
+      <h3 class="sub-h">Education</h3>
+      <ol class="entries">
+        {education.map((e) => (
+          <li>
+            <span class="when">{e.when}</span>
+            <div><h3>{e.role}, <span class="org">{e.org}</span></h3></div>
+            <span class="where">{e.where}</span>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="band about" id="about" aria-labelledby="about-h">
+      <h2 id="about-h" class="band-h">About</h2>
+      <div class="about-text">
+        <Placeholder block note="About: Vamsi to review this wording, adapted from the live site">
+          <p>I am a software engineer at AECOM, working on AI for engineering. Before that I finished an MSc in Software Systems Engineering at UCL, where I worked with IBM Research on applying large language models to legacy code refactoring and software quality analysis. Earlier I spent two years at Accenture on large-scale delivery for Cigna, after an internship at Blobcity.</p>
+          <p>I like problems where systems, automation and AI meet: modernising old codebases, building developer tools, and turning research into software that holds up in production. Outside work it is films, new games, and competitive Valorant.</p>
+        </Placeholder>
+        <p><a href="/static/resume.pdf">Résumé (PDF)</a></p>
+      </div>
+    </section>
+
+    {posts.length >= 2 && (
+      <section class="band" id="writing" aria-labelledby="writing-h">
+        <h2 id="writing-h" class="band-h">Writing</h2>
+        <ul class="writing">
+          {posts.slice(0, 3).map((p) => (
+            <li>
+              <time datetime={isoDate(p.data.publishedAt)}>{formatDate(p.data.publishedAt)}</time>
+              <a href={`/blog/${p.id}/`}>{p.data.title}</a>
+            </li>
+          ))}
+        </ul>
+        <p><a href="/blog/">All posts on Terminal Logs</a></p>
+      </section>
+    )}
+  </div>
 </Base>
 
 <style>
-  .hero { padding-block: var(--space-7) var(--space-6); display: grid; gap: var(--space-5); }
+  .hero { padding-block: var(--space-6) var(--space-7); }
+  .hero-row {
+    display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-5) var(--space-6);
+    margin-top: var(--space-5); align-items: center;
+  }
+  @media (min-width: 900px) { .hero-row { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); } }
+  .hero-text { display: grid; gap: var(--space-5); }
   .actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); }
-  .band { display: grid; gap: var(--space-3); }
+
+  .band { padding-bottom: var(--space-7); }
+  .band-h { font: 400 var(--step-head)/1.04 var(--font-serif); letter-spacing: -0.02em; margin-bottom: var(--space-5); }
+  .sub-h { font: 600 var(--step-body)/1.3 var(--font-sans); margin: var(--space-6) 0 var(--space-2); }
+
+  .fields { display: grid; gap: var(--space-3); }
+  @media (min-width: 900px) { .fields { grid-template-columns: 7fr 5fr; } }
+  .fields .field { min-height: 300px; }
+  .field h3 { font: 400 var(--step-head)/1.02 var(--font-serif); letter-spacing: -0.02em; }
+  .field p { max-width: 44ch; }
+  .field .meta { margin-top: auto; }
+
+  .others { list-style: none; padding: 0; margin-top: var(--space-5); display: grid; gap: var(--space-3); }
+  @media (min-width: 760px) { .others { grid-template-columns: 1fr 1fr; column-gap: var(--space-6); } }
+  .others a { font-weight: 600; }
+  .others span { color: var(--muted); }
+
+  .entries { list-style: none; padding: 0; }
+  .entries li { display: grid; gap: var(--space-1) var(--space-4); padding-block: var(--space-4); }
+  .entries li + li { border-top: 1px solid var(--line); }
+  @media (min-width: 760px) {
+    .entries li { grid-template-columns: 11rem 1fr 8rem; align-items: baseline; }
+    .entries .where { text-align: right; }
+  }
+  .entries h3 { font: 600 var(--step-body)/1.35 var(--font-sans); }
+  .entries .org { font-weight: 400; }
+  .entries p { color: var(--muted); max-width: 62ch; margin-top: 4px; }
+  .when, .where { font-size: var(--step-small); color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  .about-text { display: grid; gap: var(--space-4); max-width: 62ch; }
+
+  .writing { list-style: none; padding: 0; display: grid; gap: var(--space-2); margin-bottom: var(--space-4); }
+  .writing time { color: var(--muted); font-size: var(--step-small); margin-right: var(--space-3); }
+  .writing a { font: 400 var(--step-lead)/1.3 var(--font-serif); color: var(--ink); }
 </style>

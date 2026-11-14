@@ -1,0 +1,44 @@
+---
+// Rewritten for V2: no cookies and no analytics script (DESIGN.md, "Analytics").
+// If a cookieless counter is added at release, update "What is collected" and "Third parties".
+import Base from '../layouts/Base.astro';
+---
+<Base title="Privacy policy · Vamsi Mukkamala" description="How mvamsi.com handles your information: no cookies, no tracking." half="portfolio">
+  <article class="policy">
+    <h1 class="heading">Privacy policy</h1>
+    <p class="meta">Last updated <time datetime="2026-11-15">15 November 2026</time>.</p>
+
+    <h2>Overview</h2>
+    <p>This policy covers mvamsi.com, including the blog, Terminal Logs, at mvamsi.com/blog.</p>
+
+    <h2>What is collected</h2>
+    <p>Nothing about you is collected by this site. There is no analytics script, no advertising and no tracking. Google Search Console tells me which searches lead to the site, in aggregate; that data comes from Google Search, not from your visit.</p>
+
+    <h2>Cookies and storage</h2>
+    <p>The site sets no cookies. If you pick Light or Dark, that choice is saved in your browser’s local storage so the next page uses it. It never leaves your device, and choosing Auto removes it.</p>
+
+    <h2>Email</h2>
+    <p>If you email me, I use your address only to reply. I never sell or share it.</p>
+
+    <h2>Third parties</h2>
+    <ul>
+      <li>The site is hosted on GitHub Pages, which keeps server logs, including IP addresses, under the <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub Privacy Statement</a>.</li>
+    </ul>
+
+    <h2>Your rights</h2>
+    <p>You can ask what I hold about you, or ask me to delete it.</p>
+
+    <h2>Contact</h2>
+    <p>Questions about privacy: <a href="mailto:query@mvamsi.com">query@mvamsi.com</a>.</p>
+  </article>
+</Base>
+
+<style>
+  .policy {
+    max-width: calc(var(--column) + 2 * var(--gutter)); margin: 0 auto; padding: var(--space-6) var(--gutter) 0;
+    display: grid; gap: var(--space-3);
+  }
+  h2 { font: 600 var(--step-body)/1.3 var(--font-sans); margin-top: var(--space-4); }
+  p, li { max-width: 62ch; }
+  ul { padding-left: 1.2em; }
+</style>

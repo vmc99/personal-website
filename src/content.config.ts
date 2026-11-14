@@ -33,4 +33,24 @@ const posts = defineCollection({
     }),
 });
 
-export const collections = { posts };
+// Case studies, one file per project. Only public facts go in here; anything Vamsi has not
+// confirmed yet (personal contribution, metrics, screenshots) is left empty, and the case study
+// page shows a placeholder for it that blocks release.
+const projects = defineCollection({
+  loader: glob({ base: './src/content/projects', pattern: '*.md' }),
+  schema: z.object({
+    title: z.string(),
+    summary: z.string(),
+    field: z.enum(['green', 'blue', 'amber', 'plum']),
+    context: z.string(),
+    year: z.number(),
+    stack: z.array(z.string()),
+    repo: z.url(),
+    award: z.object({ label: z.string(), url: z.url() }).optional(),
+    selected: z.boolean().default(false),
+    order: z.number().default(99),
+    contribution: z.string().optional(),
+  }),
+});
+
+export const collections = { posts, projects };

@@ -1,13 +1,20 @@
 ---
-// Wraps copy that is not confirmed yet. The release checklist fails while any
-// `data-placeholder` remains in the build output (see MIGRATION.md).
+// Wraps copy that is not confirmed yet. The deploy fails on main while any
+// `data-placeholder` remains in the build output (see MIGRATION.md and the workflow).
+// Use `block` when wrapping paragraphs.
 interface Props {
   note: string;
+  block?: boolean;
 }
-const { note } = Astro.props;
+const { note, block = false } = Astro.props;
+const Tag = block ? 'div' : 'span';
 ---
-<span data-placeholder={note}><slot /></span>
+<Tag data-placeholder={note} class:list={{ block }}><slot /></Tag>
 
 <style>
-  span { text-decoration: underline wavy var(--field-amber); text-decoration-skip-ink: none; text-underline-offset: 0.25em; }
+  [data-placeholder] {
+    text-decoration: underline wavy var(--field-amber);
+    text-decoration-skip-ink: none; text-underline-offset: 0.25em;
+  }
+  .block { display: grid; gap: var(--space-3); }
 </style>
