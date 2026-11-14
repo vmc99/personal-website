@@ -17,6 +17,7 @@
     font-kerning: normal;
   }
   main { flex: 1; }
+  main:focus { outline: none; } /* focused only as the skip link's target */
   h1, h2, h3, h4, p, figure, ul, ol, blockquote { margin: 0; }
   img, svg { display: block; max-width: 100%; height: auto; }
   a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 0.18em; }

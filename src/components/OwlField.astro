@@ -12,6 +12,8 @@
   role="img"
   aria-label="A small owl drawn in square cells, in a field that runs off the edge of the page. It watches the pointer, smiles when you come close, flaps when clicked and falls asleep when left alone."
 ></div>
+<!-- Without JavaScript the field would be an empty block; leave the space out instead. -->
+<noscript><style>.fg { display: none !important; }</style></noscript>
 
 <script>
   import { startPresence, onLook, poke, idle, pointer, reduceMotion as reduce } from '../scripts/presence';

@@ -77,7 +77,7 @@ const ogImage = new URL(image ?? (half === 'blog' ? '/og/blog.png' : '/og/home.p
   <body data-half={half}>
     <a class="skip" href="#main">Skip to content</a>
     <Header half={half} />
-    <main id="main">
+    <main id="main" tabindex="-1">
       <slot />
     </main>
     <Footer />
