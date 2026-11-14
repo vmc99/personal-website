@@ -1,20 +1,36 @@
 ---
+// Technical article. Topic, date, read time; title; dek; the 42rem column with a 58rem breakout;
+// a table of contents in the left margin from 1120px, collapsible above the article below that;
+// ends with the author note and up to three related posts. See BLOG.md.
 import { render } from 'astro:content';
 import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import { getPosts, readMinutes, formatDate, isoDate, type Post } from '../../lib/posts';
-import { site } from '../../site';
+import { site, topic } from '../../site';
 import '../../styles/prose.css';
 
 export async function getStaticPaths() {
   const posts = await getPosts();
-  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post, all: posts } }));
 }
 
-const { post } = Astro.props as { post: Post };
-const { Content } = await render(post);
+const { post, all } = Astro.props as { post: Post; all: Post[] };
+const { Content, headings } = await render(post);
 const { title, description, publishedAt, updatedAt, topics, cover } = post.data;
 const url = new URL(`/blog/${post.id}/`, site.url).href;
+const mainTopic = topics[0] ? { slug: topics[0], ...topic(topics[0]) } : null;
+// The footnotes heading is visually hidden; leave it out of the contents.
+const toc = headings.filter((h) => (h.depth === 2 || h.depth === 3) && h.slug !== 'footnote-label');
+
+// Related: posts named in relatedPosts first, then those sharing the most topics, newest first.
+const named = post.data.relatedPosts
+  .map((id) => all.find((p) => p.id === id))
+  .filter((p): p is Post => !!p && !p.data.draft);
+const shared = (p: Post) => p.data.topics.filter((t) => topics.includes(t)).length;
+const byTopic = all
+  .filter((p) => p.id !== post.id && !p.data.draft && !named.includes(p) && shared(p) > 0)
+  .sort((a, b) => shared(b) - shared(a));
+const related = [...named, ...byTopic].slice(0, 3);
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -33,9 +49,10 @@ const jsonLd = {
   <article class="article" data-pagefind-body>
     <header class="article-head">
       <p class="meta" data-pagefind-ignore>
-        {topics[0] && <><a href={`/blog/topics/${topics[0]}/`}>{topics[0]}</a> · </>}
+        {mainTopic && <><a href={`/blog/topics/${mainTopic.slug}/`}>{mainTopic.label}</a> · </>}
         <time datetime={isoDate(publishedAt)}>{formatDate(publishedAt)}</time>
         {' · '}<span>{readMinutes(post.body)} min read (estimate)</span>
+        {post.data.draft && <> · <strong>Draft</strong></>}
       </p>
       <h1 class="heading" style={`view-transition-name: post-${post.id}`}>{title}</h1>
       <p class="dek">{description}</p>
@@ -48,13 +65,71 @@ const jsonLd = {
       </figure>
     )}
 
-    <div class="prose">
-      <Content />
+    <div class="article-body">
+      {toc.length >= 2 && (
+        <nav class="toc" aria-labelledby="toc-h" data-pagefind-ignore>
+          <details open>
+            <summary id="toc-h">On this page</summary>
+            <ol>
+              {toc.map((h) => (
+                <li class:list={{ sub: h.depth === 3 }}><a href={`#${h.slug}`}>{h.text}</a></li>
+              ))}
+            </ol>
+          </details>
+        </nav>
+      )}
+      <div class="prose">
+        <Content />
+      </div>
     </div>
 
-    <footer class="article-foot meta">
-      Written by <a href="/">{site.author}</a>.
-      {updatedAt && <> Updated <time datetime={isoDate(updatedAt)}>{formatDate(updatedAt)}</time>.</>}
+    <footer class="article-foot" data-pagefind-ignore>
+      <div class="byline">
+        <p>Written by <a href="/">{site.author}</a>, a software engineer at AECOM working on AI for engineering.</p>
+        {updatedAt && <p class="meta">Updated <time datetime={isoDate(updatedAt)}>{formatDate(updatedAt)}</time>.</p>}
+        <button class="copy-link" type="button" data-copy={url} hidden>Copy link</button>
+      </div>
+      {related.length > 0 && (
+        <section class="related" aria-labelledby="related-h">
+          <h2 id="related-h">Related</h2>
+          <ul>
+            {related.map((p) => (
+              <li><a href={`/blog/${p.id}/`}>{p.data.title}</a> <span class="meta">{formatDate(p.data.publishedAt)}</span></li>
+            ))}
+          </ul>
+        </section>
+      )}
     </footer>
   </article>
 </Base>
+
+<script>
+  // Heading links: a small anchor after each section heading, for sharing a section.
+  for (const h of document.querySelectorAll<HTMLHeadingElement>('.prose :is(h2, h3)[id]')) {
+    const a = document.createElement('a');
+    a.className = 'h-anchor';
+    a.href = `#${h.id}`;
+    a.setAttribute('aria-label', `Link to “${h.textContent}”`);
+    a.textContent = '#';
+    h.append(a);
+  }
+
+  // The table of contents starts closed on narrow screens.
+  const details = document.querySelector<HTMLDetailsElement>('.toc details');
+  if (details && !matchMedia('(min-width: 1120px)').matches) details.open = false;
+
+  // Copy link, with feedback in the button itself.
+  const btn = document.querySelector<HTMLButtonElement>('[data-copy]');
+  if (btn && navigator.clipboard) {
+    btn.hidden = false;
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(btn.dataset.copy!);
+        btn.textContent = 'Link copied';
+      } catch {
+        btn.textContent = 'Could not copy';
+      }
+      setTimeout(() => (btn.textContent = 'Copy link'), 2000);
+    });
+  }
+</script>

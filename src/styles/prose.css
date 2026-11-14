@@ -44,5 +44,54 @@
     .prose .expressive-code { margin-inline: calc((var(--column) - var(--breakout)) / 2); }
   }
 
-  .article-foot { padding-top: var(--space-4); border-top: 1px solid var(--line); }
+  /* Body row: prose in the column; the table of contents above it, or in the left margin from 1120px. */
+  .article-body {
+    grid-column: full; display: grid; grid-template-columns: subgrid; row-gap: var(--space-4);
+  }
+  .article-body > * { grid-column: col; }
+  @media (min-width: 1120px) {
+    .article-body > .toc {
+      grid-column: full-start / col-start; grid-row: 1; justify-self: end;
+      width: min(13rem, 100%); margin-right: var(--space-6);
+      position: sticky; top: 96px; align-self: start;
+    }
+    .article-body > .prose { grid-row: 1; }
+  }
+  .toc { font-size: var(--step-small); }
+  .toc summary { cursor: pointer; color: var(--muted); font-weight: 500; padding-block: 4px; }
+  .toc ol { list-style: none; padding: 0; margin: var(--space-2) 0 0; display: grid; gap: 6px; }
+  .toc li.sub { padding-left: var(--space-3); }
+  .toc a { color: var(--ink); text-decoration: none; }
+  .toc a:hover { color: var(--accent); }
+  @media (max-width: 1119px) {
+    .toc { background: var(--raised); border-radius: var(--radius); padding: 10px 14px; }
+  }
+
+  .prose :is(h2, h3) { scroll-margin-top: 88px; }
+  .prose .h-anchor {
+    margin-left: 0.35em; color: var(--muted); text-decoration: none; font-weight: 400;
+    opacity: 0; transition: opacity .15s ease-out;
+  }
+  .prose :is(h2, h3):hover .h-anchor, .prose .h-anchor:focus-visible { opacity: 1; }
+  @media (hover: none) { .prose .h-anchor { opacity: 1; } }
+
+  /* Footnotes: the one other place a hairline is allowed. */
+  .prose .footnotes { margin-top: 2.5em; padding-top: var(--space-3); border-top: 1px solid var(--line); font-size: 0.85em; color: var(--muted); }
+  .prose .footnotes ol { padding-left: 1.3em; }
+  .prose [data-footnote-ref] { text-decoration: none; padding-inline: 1px; }
+  .prose .data-footnote-backref { text-decoration: none; }
+  .prose .sr-only {
+    position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+  }
+
+  .article-foot { padding-top: var(--space-5); border-top: 1px solid var(--line); display: grid; gap: var(--space-5); }
+  .byline { display: grid; gap: var(--space-2); justify-items: start; }
+  .copy-link {
+    font: 500 var(--step-small)/1 var(--font-sans); color: var(--ink);
+    background: var(--raised); border: 0; border-radius: 999px; padding: 9px 14px; cursor: pointer;
+  }
+  .related h2 { font: 600 var(--step-small)/1.3 var(--font-sans); color: var(--muted); margin-bottom: var(--space-2); }
+  .related ul { list-style: none; padding: 0; display: grid; gap: var(--space-2); }
+  .related a { font: 400 var(--step-lead)/1.25 var(--font-serif); color: var(--ink); text-decoration: none; }
+  .related a:hover { color: var(--accent); }
 }
