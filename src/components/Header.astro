@@ -6,6 +6,7 @@
 // then follow the pointer and blink. Blog: the prompt mark stays. See DESIGN.md.
 import Mark from './Mark.astro';
 import ThemeSwitch from './ThemeSwitch.astro';
+import Search from './Search.astro';
 import { portfolioNav, blogNav, site } from '../site';
 
 interface Props {
@@ -29,6 +30,7 @@ const name = isBlog ? site.blog.name : site.author;
           {item.label}
         </a>
       ))}
+      {isBlog && <Search />}
       <ThemeSwitch />
     </nav>
   </div>

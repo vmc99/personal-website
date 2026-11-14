@@ -1,0 +1,124 @@
+---
+// Blog search: a dialog over Pagefind's index of blog articles (built after `astro build`).
+// Opens from the header button or the `/` key. Results are rendered here in Logbook styles
+// rather than with Pagefind's stock UI. The index does not exist under `astro dev`.
+---
+<button class="search-btn" type="button" data-search-open hidden aria-keyshortcuts="/">
+  Search
+</button>
+
+<dialog class="search" aria-label="Search Terminal Logs">
+  <form method="dialog" class="search-in" role="search">
+    <label class="visually-hidden" for="search-q">Search posts</label>
+    <input id="search-q" type="search" placeholder="Search posts" autocomplete="off" spellcheck="false" />
+    <button class="search-close" value="close" aria-label="Close search">Esc</button>
+  </form>
+  <p class="search-status meta" role="status" aria-live="polite"></p>
+  <ol class="search-results"></ol>
+</dialog>
+
+<script>
+  type Result = { url: string; excerpt: string; meta: { title?: string } };
+  type Pagefind = {
+    debouncedSearch: (q: string, opts?: object, ms?: number) => Promise<{ results: { data: () => Promise<Result> }[] } | null>;
+  };
+
+  const dialog = document.querySelector<HTMLDialogElement>('dialog.search')!;
+  const input = dialog.querySelector<HTMLInputElement>('input')!;
+  const status = dialog.querySelector<HTMLElement>('.search-status')!;
+  const list = dialog.querySelector<HTMLOListElement>('.search-results')!;
+  const openBtn = document.querySelector<HTMLButtonElement>('[data-search-open]')!;
+  openBtn.hidden = false; // no JavaScript, no button
+
+  let pagefind: Pagefind | null = null;
+  async function load() {
+    if (pagefind) return pagefind;
+    try {
+      const url = '/pagefind/pagefind.js';
+      pagefind = (await import(/* @vite-ignore */ url)) as Pagefind;
+    } catch {
+      status.textContent = 'Search is available on the built site only.';
+    }
+    return pagefind;
+  }
+
+  function open() {
+    if (dialog.open) return;
+    dialog.showModal();
+    input.select();
+    load();
+  }
+  openBtn.addEventListener('click', open);
+  addEventListener('keydown', (e) => {
+    const t = e.target as HTMLElement;
+    if (e.key !== '/' || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) return;
+    e.preventDefault();
+    open();
+  });
+  // A search field spends the first Escape clearing itself; close straight away instead.
+  input.addEventListener('keydown', (e) => { if (e.key === 'Escape') { e.preventDefault(); dialog.close(); } });
+  // Close on a click on the backdrop.
+  dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
+
+  let seq = 0;
+  input.addEventListener('input', async () => {
+    const q = input.value.trim();
+    const mine = ++seq;
+    if (!q) { list.replaceChildren(); status.textContent = ''; return; }
+    const pf = await load();
+    if (!pf) return;
+    const search = await pf.debouncedSearch(q, {}, 200);
+    if (!search || mine !== seq) return; // superseded by a later keystroke
+    const data = await Promise.all(search.results.slice(0, 8).map((r) => r.data()));
+    if (mine !== seq) return;
+    status.textContent = data.length === 0 ? `Nothing matches “${q}”.` : data.length === 1 ? 'One post.' : `${data.length} posts.`;
+    list.replaceChildren(
+      ...data.map((r) => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = r.url;
+        a.textContent = r.meta.title ?? r.url;
+        const p = document.createElement('p');
+        p.innerHTML = r.excerpt; // Pagefind escapes the text and adds only <mark>
+        li.append(a, p);
+        return li;
+      })
+    );
+  });
+</script>
+
+<style>
+  .search-btn {
+    font: 500 var(--step-small)/1 var(--font-sans); color: var(--ink);
+    background: none; border: 0; padding: 6px 0; cursor: pointer;
+  }
+  .search-btn:hover { color: var(--accent); }
+
+  .search {
+    width: min(640px, calc(100vw - 32px)); max-height: min(80dvh, 720px);
+    margin: 12dvh auto auto; padding: var(--space-4);
+    background: var(--ground); color: var(--ink);
+    border: 1px solid var(--line); border-radius: var(--radius);
+  }
+  .search::backdrop { background: color-mix(in oklab, var(--ink) 35%, transparent); }
+  .search-in { display: flex; gap: var(--space-3); align-items: center; }
+  .search-in input {
+    flex: 1; min-width: 0; font: 400 var(--step-lead)/1.2 var(--font-serif); color: var(--ink);
+    background: var(--raised); border: 0; border-radius: var(--radius); padding: 12px 14px;
+  }
+  .search-in input::-webkit-search-cancel-button { appearance: none; }
+  .search-in input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .search-close {
+    font: 500 var(--step-small)/1 var(--font-sans); color: var(--muted);
+    background: var(--raised); border: 0; border-radius: var(--radius); padding: 10px 12px; cursor: pointer;
+  }
+  .search-status { margin-top: var(--space-3); min-height: 1.4em; }
+  .search-results { list-style: none; padding: 0; margin: var(--space-2) 0 0; }
+  .search-results :global(li) { padding-block: var(--space-3); }
+  .search-results :global(li + li) { border-top: 1px solid var(--line); }
+  .search-results :global(a) { font: 400 1.25rem/1.25 var(--font-serif); color: var(--ink); text-decoration: none; }
+  .search-results :global(a:hover) { color: var(--accent); }
+  .search-results :global(p) { color: var(--muted); font-size: var(--step-small); margin-top: 4px; }
+  .search-results :global(mark) { background: var(--field-amber); color: var(--ink); border-radius: 2px; }
+</style>

@@ -32,7 +32,7 @@ const jsonLd = {
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   <article class="article" data-pagefind-body>
     <header class="article-head">
-      <p class="meta">
+      <p class="meta" data-pagefind-ignore>
         {topics[0] && <><a href={`/blog/topics/${topics[0]}/`}>{topics[0]}</a> · </>}
         <time datetime={isoDate(publishedAt)}>{formatDate(publishedAt)}</time>
         {' · '}<span>{readMinutes(post.body)} min read (estimate)</span>
